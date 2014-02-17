@@ -1,0 +1,28 @@
+{
+    "name": "franz-deleon/fdl-debug",
+    "type": "library",
+    "description": "PHP Helper function library for easier debugging",
+    "keywords": [
+        "FDL Debug",
+        "PHP Debugging"
+    ],
+    "homepage": "https://github.com/franz-deleon/FdlDebug",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Franz de Leon",
+            "email": "kelmadics@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zend-loader": "~2.1",
+        "zendframework/zend-stdlib": "~2.1"
+    },
+    "autoload": {
+        "psr-0": {
+            "FdlDebug": "src/"
+        }
+    }
+}
