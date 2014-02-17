@@ -5,6 +5,11 @@ use ErrorException;
 
 class Debug
 {
+    public function __construct()
+    {
+        require_once dirname(__FILE__) . '/../../config/global.php';
+    }
+
     /**
      * Is XDebug enabled?
      * @param void
@@ -27,7 +32,7 @@ class Debug
      */
     public function getDebugTrace($offset = 0)
     {
-        $backTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);//
+        $backTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $trace = $this->cleanTrace($backTrace);
 
         if (is_integer($offset)) {
@@ -49,7 +54,10 @@ class Debug
         $fileTrace = get_included_files();
         $files = array();
         foreach ($fileTrace as $key => $file) {
-            if (strpos($file, '/Zend/') === false && strpos($file, '/nav_debug/') === false) {
+            if (strpos($file, '/Zend/') === false
+                && strpos($file, '/nav_debug/') === false
+                && strpos($file, 'phar:') === false
+            ) {
                 $files[$key]['order'] = ($key + 1);
                 $files[$key]['file'] = $file;
             }
@@ -216,9 +224,13 @@ class Debug
         foreach ($trace as $val) {
             if ($val['function'] != 'require'
                 && $val['function'] != 'require_once'
-                    && $val['function'] != 'include'
-                        && $val['function'] != 'include_once'
-                            ) {
+                && $val['function'] != 'include'
+                && $val['function'] != 'include_once'
+            ) {
+                if (isset($val['file']) && strpos($val['file'], 'phar://') === 0) {
+                    continue;
+                }
+
                 $cleanTrace[] = $val;
             }
         }

@@ -58,24 +58,22 @@ class DebugTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Debug->getDebugTrace()
+     * @group test2
      */
     public function testGetDebugTrace()
     {
-        // TODO Auto-generated DebugTest->testGetDebugTrace()
-        $this->markTestIncomplete("getDebugTrace test not implemented");
-
-        $this->Debug->getDebugTrace(/* parameters */);
+        $r = $this->Debug->getDebugTrace(/* parameters */);
+        var_dump($r);
     }
 
     /**
      * Tests Debug->getFileTrace()
+     * @group test3
      */
     public function testGetFileTrace()
     {
-        // TODO Auto-generated DebugTest->testGetFileTrace()
-        $this->markTestIncomplete("getFileTrace test not implemented");
-
-        $this->Debug->getFileTrace(/* parameters */);
+        $r = $this->Debug->getFileTrace(/* parameters */);
+        var_dump($r);
     }
 
     /**
