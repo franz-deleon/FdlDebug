@@ -16,6 +16,10 @@ class ConditionsManager
      */
     protected $conditionsMethodName = array();
 
+    /**
+     *
+     * @var unknown
+     */
     protected $conditionsExpression = array();
 
     /**
@@ -55,19 +59,19 @@ class ConditionsManager
     }
 
     /**
-     * Did the conditions passed?
+     * Did the conditions passed for this instance?
      * @param void
      * @return boolean
      */
-    public function isPassed($index)
+    public function isPassed($instanceId)
     {
-        if (!empty($this->conditionsExpression[$index]['operand'])) {
+        if (!empty($this->conditionsExpression[$instanceId]['operand'])) {
             $evalStatement = '';
 
-            $last = count($this->conditionsExpression[$index]['operand']) - 1;
-            foreach ($this->conditionsExpression[$index]['operand'] as $current => $operand) {
+            $last = count($this->conditionsExpression[$instanceId]['operand']) - 1;
+            foreach ($this->conditionsExpression[$instanceId]['operand'] as $current => $operand) {
                 if ($current < $last) {
-                    $evalStatement .= $operand . ' ' . $this->conditionsExpression[$index]['operator'][$current] . ' ';
+                    $evalStatement .= $operand . ' ' . $this->conditionsExpression[$instanceId]['operator'][$current] . ' ';
                 } else {
                     $evalStatement .= $operand;
                 }
@@ -79,15 +83,15 @@ class ConditionsManager
     }
 
 
-    public function addConditionsOperand($index, $operand)
+    public function addConditionsOperand($instanceId, $operand)
     {
-        $this->conditionsExpression[$index]['operand'][] = (int) $operand;
+        $this->conditionsExpression[$instanceId]['operand'][] = (int) $operand;
         return $this;
     }
 
-    public function addConditionsOperator($index, $operator)
+    public function addConditionsOperator($instanceId, $operator)
     {
-        $this->conditionsExpression[$index]['operator'][] = $operator;
+        $this->conditionsExpression[$instanceId]['operator'][] = $operator;
         return $this;
     }
 

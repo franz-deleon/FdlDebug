@@ -56,11 +56,13 @@ class Front
     {
         $condition = $this->conditionsManager->getConditionByMethodName($methodName);
         if (null !== $condition) {
-            $trace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
             self::initDebugInstance();
             if ($condition instanceof AbstractCondition) {
-                $condition->setDebugInstance(self::$debugInstance);
-                $condition->setFile($trace[0]['file'])->setLine($trace[0]['line']);
+                $trace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
+                $condition
+                    ->setDebugInstance(self::$debugInstance)
+                    ->setFile($trace[0]['file'])
+                    ->setLine($trace[0]['line']);
             }
 
             // initialize the condition
@@ -87,7 +89,13 @@ class Front
             if (true === $pass) {
                 return call_user_func_array(array($this->debug, $methodName), $args);
             }
+            return;
         }
+
+        throw new \BadFunctionCallException(sprintf(
+            "Method '%s' does not exist. Please make sure it is implemented as a condition or in FdlDebug\\Debug",
+            $methodName
+        ));
     }
 
     /**

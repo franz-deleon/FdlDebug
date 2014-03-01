@@ -7,7 +7,6 @@ class Boolean extends AbstractCondition implements ConditionsInterface
      * Holds the loop condition status
      * @var boolean
      */
-    protected static $conditionStack = array();
     protected $condition;
 
     /**
@@ -17,21 +16,19 @@ class Boolean extends AbstractCondition implements ConditionsInterface
      * @param mixed $condition
      * @return \FdlDebug\Condition\Boolean
      */
-    public function setCondBoolean($condition)
+    public function condBoolean($condition)
     {
         if (!is_bool($condition)) {
             $this->condition = (boolean) $condition;
         }
         $this->condition = $condition;
 
-        //self::$conditionStack[$this->getDebugInstance()]['boolean'] = $condition;
-
         return $this;
     }
 
     public function getMethod()
     {
-        return 'setCondBoolean';
+        return 'condBoolean';
     }
 
     public function evaluate()
