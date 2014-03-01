@@ -45,37 +45,53 @@ class Front
         $this->conditionsManager = new ConditionsManager($configs['conditions']);
     }
 
+    /**
+     * This is where the magic happens
+     *
+     * @param string $methodName
+     * @param array  $args
+     * @return \FdlDebug\Front|mixed
+     */
     public function __call($methodName, $args)
     {
         $condition = $this->conditionsManager->getConditionByMethodName($methodName);
         if (null !== $condition) {
             $trace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
+            self::initDebugInstance();
             if ($condition instanceof AbstractCondition) {
-                self::initDebugInstance();
-
                 $condition->setDebugInstance(self::$debugInstance);
                 $condition->setFile($trace[0]['file'])->setLine($trace[0]['line']);
             }
 
+            // initialize the condition
             call_user_func_array(array($condition, $methodName), $args);
 
+            $this->conditionsManager->addConditionsOperand(self::$debugInstance, $condition->evaluate());
+            $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&');
+
+            // explicitly return '$this' to enable chaining
             return $this;
         }
 
         if (is_callable(array($this->debug, $methodName))) {
+            $pass = $this->conditionsManager->isPassed(self::$debugInstance);
+
             // Reset the debug instance if and only if the method
-            // is an instance of FdlDebug\Debug and not of its abstract class
-            $reflectionMethod = new ReflectionMethod($this->debug, $methodName);
-            if ($reflectionMethod->getDeclaringClass()->getName() === get_class($this->debug)) {
+            // is an instance of FdlDebug\Debug and not of child classes
+            // that extends it.
+            $ref = new ReflectionMethod($this->debug, $methodName);
+            if ($ref->getDeclaringClass()->getName() === get_class($this->debug)) {
                 self::$debugInstance = null;
             }
 
-            return call_user_func_array(array($debug, $methodName), $args);
+            if (true === $pass) {
+                return call_user_func_array(array($this->debug, $methodName), $args);
+            }
         }
     }
 
     /**
-     * Retrieve the instance of the Front class
+     * Retrieve the instance of this Front class
      */
     public static function i()
     {
@@ -87,6 +103,11 @@ class Front
         return self::$instance;
     }
 
+    /**
+     * Initialize a debug instance if it does not exist
+     * @param void
+     * @return null
+     */
     public static function initDebugInstance()
     {
         if (null === self::$debugInstance) {

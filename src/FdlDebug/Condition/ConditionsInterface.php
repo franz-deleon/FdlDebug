@@ -30,5 +30,5 @@ interface ConditionsInterface
      * The method where the logic is checked if the condition passes or not
      * @return boolean
      */
-    public function check();
+    public function evaluate();
 }

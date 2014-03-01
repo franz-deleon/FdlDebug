@@ -47,7 +47,11 @@ class FrontTest extends \PHPUnit_Framework_TestCase
      */
     public function test__callPrintNow()
     {
-        $this->Front->setCondBoolean(true)->pr('asdfasdf');
+        for ($x = 1; $x <= 100; $x++) {
+            $this->Front->setCondBoolean(false);
+        }
+        $this->Front->pr('xxx');
+
     }
 
     /**

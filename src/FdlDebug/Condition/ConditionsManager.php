@@ -16,8 +16,12 @@ class ConditionsManager
      */
     protected $conditionsMethodName = array();
 
+    protected $conditionsExpression = array();
+
     /**
-     * Constructor
+     * Constructor.
+     * Initialized the conditions
+     * @param array $conditions
      */
     public function __construct(array $conditions)
     {
@@ -32,7 +36,6 @@ class ConditionsManager
 
     /**
      * Add a new condition checker to the stack
-     *
      * @param ConditionsInterface $condition
      * @throws \ErrorException
      */
@@ -52,16 +55,40 @@ class ConditionsManager
     }
 
     /**
-     * Checks a condition from the stack.
-     *
-     * @param string $methodName
-     * @return boolean|null
+     * Did the conditions passed?
+     * @param void
+     * @return boolean
      */
-    public function methodCheck($methodName)
+    public function isPassed($index)
     {
-        if (isset($this->conditions[$methodName])) {
-            return $this->conditions[$methodName]->check();
+        if (!empty($this->conditionsExpression[$index]['operand'])) {
+            $evalStatement = '';
+
+            $last = count($this->conditionsExpression[$index]['operand']) - 1;
+            foreach ($this->conditionsExpression[$index]['operand'] as $current => $operand) {
+                if ($current < $last) {
+                    $evalStatement .= $operand . ' ' . $this->conditionsExpression[$index]['operator'][$current] . ' ';
+                } else {
+                    $evalStatement .= $operand;
+                }
+            }
+
+            return (bool) eval("return $evalStatement;");
         }
+        return true;
+    }
+
+
+    public function addConditionsOperand($index, $operand)
+    {
+        $this->conditionsExpression[$index]['operand'][] = (int) $operand;
+        return $this;
+    }
+
+    public function addConditionsOperator($index, $operator)
+    {
+        $this->conditionsExpression[$index]['operator'][] = $operator;
+        return $this;
     }
 
     /**

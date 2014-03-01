@@ -8,6 +8,7 @@ class Boolean extends AbstractCondition implements ConditionsInterface
      * @var boolean
      */
     protected static $conditionStack = array();
+    protected $condition;
 
     /**
      * Implementation for getMethod
@@ -19,10 +20,11 @@ class Boolean extends AbstractCondition implements ConditionsInterface
     public function setCondBoolean($condition)
     {
         if (!is_bool($condition)) {
-            $condition = (boolean) $condition;
+            $this->condition = (boolean) $condition;
         }
+        $this->condition = $condition;
 
-        self::$conditionStack[$this->getDebugInstance()]['boolean'] = $condition;
+        //self::$conditionStack[$this->getDebugInstance()]['boolean'] = $condition;
 
         return $this;
     }
@@ -32,16 +34,10 @@ class Boolean extends AbstractCondition implements ConditionsInterface
         return 'setCondBoolean';
     }
 
-    public function check()
+    public function evaluate()
     {
-        $index = $this->getCreatedIndex();
-        if (null !== $index) {
-            if (!empty(self::$conditionStack[$index])) {
-                if (self::$conditionStack[$index]['boolean'] === true) {
-                    return true;
-                }
-                return false;
-            }
+        if (is_bool($this->condition)) {
+            return $this->condition;
         }
     }
 }
