@@ -20,8 +20,9 @@ class Boolean extends AbstractCondition implements ConditionsInterface
     {
         if (!is_bool($condition)) {
             $this->condition = (boolean) $condition;
+        } else {
+            $this->condition = $condition;
         }
-        $this->condition = $condition;
 
         return $this;
     }

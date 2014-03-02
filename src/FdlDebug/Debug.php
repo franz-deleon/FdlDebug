@@ -1,8 +1,30 @@
 <?php
 namespace FdlDebug;
 
-class Debug extends DebugAbstract
+use FdlDebug\Writer\WriterInterface;
+
+class Debug extends DebugAbstract implements DebugInterface
 {
+    protected $writer;
+
+    /**
+     * @param string $writer
+     */
+    public function __construct($writer)
+    {
+        $this->setWriter($writer);
+    }
+
+    public function setWriter(WriterInterface $writer)
+    {
+        $this->writer = $writer;
+    }
+
+    public function getWriter()
+    {
+        return $this->writer;
+    }
+
     /**
      * Alias to printNow
      * @param mixed $content
@@ -14,7 +36,7 @@ class Debug extends DebugAbstract
 
     public function printNow($content)
     {
-        echo $content;
+        $this->getWriter()->write($content);
     }
 
     /**

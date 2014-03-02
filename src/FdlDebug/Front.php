@@ -3,7 +3,7 @@ namespace FdlDebug;
 
 use FdlDebug\Condition\ConditionsManager;
 use FdlDebug\Condition\AbstractCondition;
-use ReflectionMethod;
+use FdlDebug\StdLib\Utility;
 
 /**
  * This is the entry point for the debug using a front
@@ -33,16 +33,41 @@ class Front
     protected $debug;
 
     /**
-     * Implementation of singleton pattern
+     * Container for debug extensions
+     * @var array Array containing objects
      */
-    protected function __construct()
+    protected $debugExtensions = array();
+
+    /**
+     * Protected constructor for singleton pattern
+     */
+    protected function __construct($writer = null)
     {
         include __DIR__ . '/../../Bootstrapper.php';
 
         $configs = Bootstrap::getConfigs();
 
-        $this->debug = new Debug();
+        $this->debug             = new Debug($this->initWriter($writer ?: $configs['writer']));
         $this->conditionsManager = new ConditionsManager($configs['conditions']);
+        $this->registerExtensions($configs['debug_extensions']);
+    }
+
+    /**
+     * Retrieve the instance of this Front class
+     * @param string $writer An optional writer to pass to override the default writer.
+     *                       Note that passing a writer breaks the singleton's
+     *                       only one instance and may impact performance as the Front
+     *                       object is initialized on every call.
+     * @return \FdlDebug\FdlDebug\Front
+     */
+    public static function i($writer = null)
+    {
+        self::initDebugInstance();
+
+        if (null === self::$instance || null !== $writer) {
+            self::$instance = new self($writer);
+        }
+        return self::$instance;
     }
 
     /**
@@ -54,15 +79,16 @@ class Front
      */
     public function __call($methodName, $args)
     {
+        // Check first if the method is registered in any conditions
         $condition = $this->conditionsManager->getConditionByMethodName($methodName);
         if (null !== $condition) {
             self::initDebugInstance();
             if ($condition instanceof AbstractCondition) {
-                $trace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
-                $condition
-                    ->setDebugInstance(self::$debugInstance)
-                    ->setFile($trace[0]['file'])
-                    ->setLine($trace[0]['line']);
+                $condition->setDebugInstance(self::$debugInstance);
+                if ($condition->useDebugTracingForIndex()) {
+                    $trace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
+                    $condition->setFile($trace[0]['file'])->setLine($trace[0]['line']);
+                }
             }
 
             // initialize the condition
@@ -75,19 +101,30 @@ class Front
             return $this;
         }
 
+        // check if method name is of debug object or an extension
+        $debug = null;
         if (is_callable(array($this->debug, $methodName))) {
+            $debug = $this->debug;
+        } else {
+            foreach ($this->debugExtensions as $extension) {
+                if (is_callable(array($extension, $methodName))) {
+                    $debug = $extension;
+                    break;
+                }
+            }
+        }
+
+        // a debug object has been found
+        if (isset($debug)) {
             $pass = $this->conditionsManager->isPassed(self::$debugInstance);
 
-            // Reset the debug instance if and only if the method
-            // is an instance of FdlDebug\Debug and not of child classes
-            // that extends it.
-            $ref = new ReflectionMethod($this->debug, $methodName);
-            if ($ref->getDeclaringClass()->getName() === get_class($this->debug)) {
+            // Reset the debug instance if the method name is prefixed
+            if ($this->isMethodNamePrefixed($methodName)) {
                 self::$debugInstance = null;
             }
 
             if (true === $pass) {
-                return call_user_func_array(array($this->debug, $methodName), $args);
+                return call_user_func_array(array($debug, $methodName), $args);
             }
             return;
         }
@@ -98,17 +135,54 @@ class Front
         ));
     }
 
-    /**
-     * Retrieve the instance of this Front class
-     */
-    public static function i()
+    protected function isMethodNamePrefixed($methodName)
     {
-        self::initDebugInstance();
-
-        if (null === self::$instance) {
-            self::$instance = new self();
+        $configs = Bootstrap::getConfigs();
+        foreach ($configs['debug_prefixes'] as $prefix) {
+            if (0 === strpos($methodName, $prefix)) {
+                return true;
+            }
         }
-        return self::$instance;
+        return false;
+    }
+
+    /**
+     * Register the custom extensions
+     * @param array $extensions
+     */
+    public function registerExtensions(array $extensions)
+    {
+        if (empty($extensions)) {
+            return;
+        }
+
+        foreach ($extensions as $extension) {
+            if (class_exists($extension)) {
+                $extension = new $extension();
+                if ($extension instanceof DebugInterface) {
+                    $extension->setWriter($this->debug->getWriter());
+                    $this->debugExtensions[] = $extension;
+                }
+            }
+        }
+    }
+
+    /**
+     * Initialize the writer
+     * @param string $writer
+     * @return \FdlDebug\Writer\WriterInterface
+     */
+    protected function initWriter($writer)
+    {
+        if (class_exists($existingWriter = __NAMESPACE__ . "\\Writer\\" . Utility::underscoreToCamelcase($writer))) {
+            return new $existingWriter();
+        }
+
+        if (class_exists($writer)) {
+            new $writer();
+        }
+
+        throw new \ErrorException("No writer found");
     }
 
     /**

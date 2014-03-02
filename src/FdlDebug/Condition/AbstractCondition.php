@@ -18,11 +18,9 @@ abstract class AbstractCondition extends DebugAbstract
     protected $line;
 
     /**
-     * This Holds the created index base of file and line number
+     * Debug instance id
      * @var string
      */
-    protected $index;
-
     protected $debugInstance;
 
 
@@ -59,13 +57,22 @@ abstract class AbstractCondition extends DebugAbstract
         return $this->debugInstance;
     }
 
-    public function createIndex()
-    {
-        $this->index = md5($trace[0]['file']) . '-' . $trace[0]['line'];
-    }
-
     public function getCreatedIndex()
     {
-        return $this->index;
+        return $this->getFile() . ':' . $this->getLine();
+    }
+
+    /**
+     * Swith to enable a debug tracing call.
+     * Enabling this will have setLine and setFile initialized.
+     *
+     * We have this switch as false for performance improvement
+     * to avoid debug_backtrace being called everytime.
+     *
+     * @return boolean
+     */
+    public function useDebugTracingForIndex()
+    {
+        return false;
     }
 }

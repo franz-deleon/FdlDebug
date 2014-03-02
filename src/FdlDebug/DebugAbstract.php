@@ -3,16 +3,6 @@ namespace FdlDebug;
 
 abstract class DebugAbstract
 {
-    protected $writer;
-
-    /**
-     * @param string $writer
-     */
-    public function __construct($writer = null)
-    {
-        $this->writer = $writer;
-    }
-
     /**
      * Runs a PHP native debug_backtrace
      * @param void

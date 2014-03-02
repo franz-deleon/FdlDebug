@@ -17,7 +17,7 @@ class Range extends AbstractCondition implements ConditionsInterface
      */
     public function loopRange($start, $end = null)
     {
-        $index = $this->getStampIndex();
+        $index = $this->getCreatedIndex();
         if (empty(self::$loopRangeStamp[$index])) {
             self::$loopRangeStamp[$index]['iterator'] = 1;
             self::$loopRangeStamp[$index]['start']    = $start;
@@ -36,7 +36,7 @@ class Range extends AbstractCondition implements ConditionsInterface
 
     public function evaluate()
     {
-        $index = $this->getStampIndex();
+        $index = $this->getCreatedIndex();
         if (!empty(self::$loopRangeStamp[$index])) {
             if (self::$loopRangeStamp[$index]['iterator'] >= self::$loopRangeStamp[$index]['start']) {
                 if (isset(self::$loopRangeStamp[$index]['end'])) {
@@ -51,8 +51,8 @@ class Range extends AbstractCondition implements ConditionsInterface
         }
     }
 
-    public function getStampIndex()
+    public function useDebugTracingForIndex()
     {
-        return $this->getFile() . ':' . $this->getLine();
+        return true;
     }
 }
