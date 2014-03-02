@@ -1,6 +1,8 @@
 <?php
 namespace FdlDebug\Condition;
 
+use FdlDebug\StdLib\Utility;
+
 class ConditionsManager
 {
     /**
@@ -17,8 +19,9 @@ class ConditionsManager
     protected $conditionsMethodName = array();
 
     /**
-     *
-     * @var unknown
+     * An array of conditional expressions that converted
+     * to boolean values using operands and operators
+     * @var array
      */
     protected $conditionsExpression = array();
 
@@ -31,9 +34,9 @@ class ConditionsManager
     {
         foreach ($conditions as $condition) {
             if (class_exists($condition)) {
-                $this->addConditions(new $conditions);
-            } elseif (class_exists($condName = __NAMESPACE__ . '\\' . ucfirst($condition))) {
-                $this->addConditions(new $condName);
+                $this->addConditions(new $condition);
+            } elseif (class_exists($condition = __NAMESPACE__ . '\\' . Utility::underscoreToCamelcase($condition))) {
+                $this->addConditions(new $condition);
             }
         }
     }
@@ -60,10 +63,12 @@ class ConditionsManager
 
     /**
      * Did the conditions passed for this instance?
+     * Evaluates the conditions expressions.
+     *
      * @param void
      * @return boolean
      */
-    public function isPassed($instanceId)
+    public function isPassingEvaluation($instanceId)
     {
         if (!empty($this->conditionsExpression[$instanceId]['operand'])) {
             $evalStatement = '';

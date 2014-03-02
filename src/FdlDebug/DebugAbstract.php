@@ -86,14 +86,11 @@ abstract class DebugAbstract
     /**
      * Slices a backtrace array result
      *
-     * @param array  $traceArray         The target trace array
-     * @param string $traceKey           The target backtrace key
-     * @param string $traceValueToSearch The target backtrace's key value
-     * @param number $fromSearchedValueOffset   The offset that starts from a successfully
-     *                                   search result
-     * @param number $fromStartOffset    The offset that starts from the of trace array
-     *                                   in which will not be included when $traceValueToSearch
-     *                                   is searched for.
+     * @param array  $traceArray              The target trace array
+     * @param string $traceKey                The target backtrace key
+     * @param string $traceValueToSearch      The target backtrace's key value
+     * @param number $fromSearchedValueOffset The offset that starts from a successfully searched $traceValueToSearch
+     * @param number $fromStartOffset         The offset that starts from the beginning of $traceArray
      * @return array
      */
     public function findTraceKeyAndSlice(

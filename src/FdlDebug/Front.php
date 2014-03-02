@@ -58,7 +58,7 @@ class Front
      *                       Note that passing a writer breaks the singleton's
      *                       only one instance and may impact performance as the Front
      *                       object is initialized on every call.
-     * @return \FdlDebug\FdlDebug\Front
+     * @return \FdlDebug\Front
      */
     public static function i($writer = null)
     {
@@ -116,7 +116,7 @@ class Front
 
         // a debug object has been found
         if (isset($debug)) {
-            $pass = $this->conditionsManager->isPassed(self::$debugInstance);
+            $pass = $this->conditionsManager->isPassingEvaluation(self::$debugInstance);
 
             // Reset the debug instance if the method name is prefixed
             if ($this->isMethodNamePrefixed($methodName)) {

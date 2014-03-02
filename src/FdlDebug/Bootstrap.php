@@ -20,7 +20,7 @@ class Bootstrap
     /**
      * Initialize the bootstrap
      * @param string $customConfigFile The custom config file to be initialized.
-     *                                 Should be fully qualified file path.
+     *                                 Should be fully qualified file path or array.
      */
     public static function init($customConfigFile = null)
     {
