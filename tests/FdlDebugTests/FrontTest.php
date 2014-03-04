@@ -47,9 +47,14 @@ class FrontTest extends \PHPUnit_Framework_TestCase
      */
     public function test__callPrintNow()
     {
+        echo "first";
         for ($x = 1; $x <= 5; $x++) {
-            $this->Front->condBoolean($x == 3 || $x == 1)->loopRange(1, 3)->pr($x);
+            //$this->Front->condBoolean($x == 3 || $x == 1)->loopRange(1, 3)->pr($x);
+            $this->Front->loopFrom('3rd from end')->pr($x);
+            $this->Front->loopFrom('5th from start')->pr($x);
         }
+        $this->Front->loopFromEnd();
+        echo "last";
     }
 
     /**
