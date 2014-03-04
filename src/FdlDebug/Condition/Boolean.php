@@ -38,4 +38,13 @@ class Boolean extends AbstractCondition implements ConditionsInterface
             return $this->condition;
         }
     }
+
+    /**
+     * Do nothing
+     * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
+     */
+    public function postDebug()
+    {
+        return;
+    }
 }

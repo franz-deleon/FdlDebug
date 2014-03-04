@@ -29,11 +29,19 @@ class Range extends AbstractCondition implements ConditionsInterface
         return $this;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::evaluationCallbackMethod()
+     */
     public function evaluationCallbackMethod()
     {
         return 'loopRange';
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::evaluate()
+     */
     public function evaluate()
     {
         $index = $this->getCreatedIndex();
@@ -51,8 +59,21 @@ class Range extends AbstractCondition implements ConditionsInterface
         }
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\AbstractCondition::useDebugTracingForIndex()
+     */
     public function useDebugTracingForIndex()
     {
         return true;
+    }
+
+    /**
+     * Do nothing
+     * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
+     */
+    public function postDebug()
+    {
+        return;
     }
 }

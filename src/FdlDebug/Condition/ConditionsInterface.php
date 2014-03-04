@@ -31,4 +31,11 @@ interface ConditionsInterface
      * @return boolean
      */
     public function evaluate();
+
+    /**
+     * A hook for any post debug process
+     * @param void
+     * @return null
+     */
+    public function postDebug();
 }
