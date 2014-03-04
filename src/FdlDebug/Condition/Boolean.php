@@ -27,7 +27,7 @@ class Boolean extends AbstractCondition implements ConditionsInterface
         return $this;
     }
 
-    public function getMethod()
+    public function evaluationCallbackMethod()
     {
         return 'condBoolean';
     }

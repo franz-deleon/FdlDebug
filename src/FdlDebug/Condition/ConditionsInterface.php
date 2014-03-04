@@ -24,7 +24,7 @@ interface ConditionsInterface
      *
      * @return string The name of the condition method
      */
-    public function getMethod();
+    public function evaluationCallbackMethod();
 
     /**
      * The method where the logic is checked if the condition passes or not

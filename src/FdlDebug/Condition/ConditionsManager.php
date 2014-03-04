@@ -48,7 +48,7 @@ class ConditionsManager
      */
     public function addConditions(ConditionsInterface $condition)
     {
-        $methodName = $condition->getMethod();
+        $methodName = $condition->evaluationCallbackMethod();
         if (isset($this->conditionsMethodName[$methodName])) {
             throw new \ErrorException(sprintf(
                 "Method %s already exist in another condition",
@@ -62,21 +62,20 @@ class ConditionsManager
     }
 
     /**
-     * Did the conditions passed for this instance?
      * Evaluates the conditions expressions.
      *
      * @param void
      * @return boolean
      */
-    public function isPassingEvaluation($instanceId)
+    public function evaluateExpressions($instanceId)
     {
         if (!empty($this->conditionsExpression[$instanceId]['operand'])) {
             $evalStatement = '';
 
-            $last = count($this->conditionsExpression[$instanceId]['operand']) - 1;
-            foreach ($this->conditionsExpression[$instanceId]['operand'] as $current => $operand) {
-                if ($current < $last) {
-                    $evalStatement .= $operand . ' ' . $this->conditionsExpression[$instanceId]['operator'][$current] . ' ';
+            $lastKey = Utility::arrayLastKey($this->conditionsExpression[$instanceId]['operand']);
+            foreach ($this->conditionsExpression[$instanceId]['operand'] as $key => $operand) {
+                if ($key < $lastKey) {
+                    $evalStatement .= $operand . ' ' . $this->conditionsExpression[$instanceId]['operator'][$key] . ' ';
                 } else {
                     $evalStatement .= $operand;
                 }
@@ -87,16 +86,41 @@ class ConditionsManager
         return true;
     }
 
-
     public function addConditionsOperand($instanceId, $operand)
     {
         $this->conditionsExpression[$instanceId]['operand'][] = (int) $operand;
         return $this;
     }
 
+    public function getConditionsOperand($instanceId)
+    {
+        if (isset($this->conditionsExpression[$instanceId]['operand'])) {
+            return $this->conditionsExpression[$instanceId]['operand'];
+        }
+    }
+
+    public function setConditionsOperand($instanceId, array $operand)
+    {
+        $this->conditionsExpression[$instanceId]['operand'] = $operand;
+        return $this;
+    }
+
     public function addConditionsOperator($instanceId, $operator)
     {
         $this->conditionsExpression[$instanceId]['operator'][] = $operator;
+        return $this;
+    }
+
+    public function getConditionsOperator($instanceId)
+    {
+        if (isset($this->conditionsExpression[$instanceId]['operator'])) {
+            return $this->conditionsExpression[$instanceId]['operator'];
+        }
+    }
+
+    public function setConditionsOperator($instanceId, array $operator)
+    {
+        $this->conditionsExpression[$instanceId]['operator'] = $operator;
         return $this;
     }
 
@@ -107,7 +131,7 @@ class ConditionsManager
      */
     public function getConditionByMethodName($methodName)
     {
-        if ($this->doesConditionMethodExists($methodName)) {
+        if ($this->isExistingConditionsMethod($methodName)) {
             return $this->conditions[$this->conditionsMethodName[$methodName]];
         }
     }
@@ -116,7 +140,7 @@ class ConditionsManager
      * Does the condition method name exists?
      * @param string $methodName
      */
-    public function doesConditionMethodExists($methodName)
+    public function isExistingConditionsMethod($methodName)
     {
         if (!empty($this->conditionsMethodName[$methodName])) {
             return true;

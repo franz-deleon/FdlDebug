@@ -116,7 +116,7 @@ class Front
 
         // a debug object has been found
         if (isset($debug)) {
-            $pass = $this->conditionsManager->isPassingEvaluation(self::$debugInstance);
+            $pass = $this->conditionsManager->evaluateExpressions(self::$debugInstance);
 
             // Reset the debug instance if the method name is prefixed
             if ($this->isMethodNamePrefixed($methodName)) {

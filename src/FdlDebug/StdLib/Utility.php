@@ -50,4 +50,14 @@ abstract class Utility
         });
         return ucfirst(implode('', $string));
     }
+
+    /**
+     * Retrieve the last member key of a hashed/array
+     * @return mixed
+     */
+    public static function arrayLastKey(array $array)
+    {
+        $array = array_keys($array);
+        return array_pop($array);
+    }
 }
