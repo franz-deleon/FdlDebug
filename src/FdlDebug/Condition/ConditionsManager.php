@@ -12,6 +12,12 @@ class ConditionsManager
     protected $conditions = array();
 
     /**
+     * Called conditions
+     * @var array Array of Condition\ConditionsInterface
+     */
+    protected $calledConditions = array();
+
+    /**
      * A mapper array with key as the method
      * name and val as condition class name
      * @var array
@@ -59,6 +65,19 @@ class ConditionsManager
         $className = get_class($condition);
         $this->conditions[$className] = $condition;
         $this->conditionsMethodName[$methodName] = $className;
+    }
+
+    /**
+     * Return the conditions list or a specific condition
+     * @param string $className
+     * @return ConditionsInterface
+     */
+    public function getConditions($className = null)
+    {
+        if (null !== $className && isset($this->conditions[$className])) {
+            return $this->conditions[$className];
+        }
+        return $this->conditions;
     }
 
     /**
@@ -134,6 +153,21 @@ class ConditionsManager
         if ($this->isExistingConditionsMethod($methodName)) {
             return $this->conditions[$this->conditionsMethodName[$methodName]];
         }
+    }
+
+    public function getCalledConditions()
+    {
+        return $this->calledConditions;
+    }
+
+    public function addCalledConditions(ConditionsInterface $condition)
+    {
+        $this->calledConditions[] = $condition;
+    }
+
+    public function setCalledConditions(array $conditions)
+    {
+        $this->calledConditions = $conditions;
     }
 
     /**

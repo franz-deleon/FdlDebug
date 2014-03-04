@@ -58,7 +58,7 @@ class Bootstrap
      * Return the configs
      * @return array
      */
-    public static function getConfigs()
+    public static function &getConfigs()
     {
         return self::$configs;
     }

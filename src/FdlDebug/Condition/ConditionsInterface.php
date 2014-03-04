@@ -8,17 +8,21 @@ interface ConditionsInterface
      * for checking
      *
      * Example:
-     *
-     * Range condition can be accessed using the front controller by:
+     * Range condition using loopRange() method can be accessed using the front controller by:
      * <code>
-     * $front::i()->setCondRange(1, 2)->pr('print me');
+     * $front::i()->loopRange(1, 2)->pr('print me');
      * </code>
      *
-     * You would register Range condition as so:
+     * You would then register the method condition callback method as so:
      * <code>
-     * public function getMethod()
+     * public function evaluationCallbackMethod()
      * {
-     *     return 'setCondRange';
+     *     return 'loopRange';
+     * }
+     *
+     * public function loopRange([$arg], [$arg2]...)
+     * {
+     *     // some logic
      * }
      * </code>
      *
@@ -33,8 +37,8 @@ interface ConditionsInterface
     public function evaluate();
 
     /**
-     * A hook for any post debug process
-     * @param void
+     * A hook for any post debug process/logic
+     * @param void|$return The return value is passed automatically
      * @return null
      */
     public function postDebug();

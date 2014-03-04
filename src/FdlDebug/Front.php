@@ -53,24 +53,6 @@ class Front
     }
 
     /**
-     * Retrieve the instance of this Front class
-     * @param string $writer An optional writer to pass to override the default writer.
-     *                       Note that passing a writer breaks the singleton's
-     *                       only one instance and may impact performance as the Front
-     *                       object is initialized on every call.
-     * @return \FdlDebug\Front
-     */
-    public static function i($writer = null)
-    {
-        self::initDebugInstance();
-
-        if (null === self::$instance || null !== $writer) {
-            self::$instance = new self($writer);
-        }
-        return self::$instance;
-    }
-
-    /**
      * This is where the magic happens
      *
      * @param string $methodName
@@ -79,10 +61,12 @@ class Front
      */
     public function __call($methodName, $args)
     {
+        // initialize also here so that instances passed to a variable will also relinitialize
+        self::initDebugInstance();
+
         // Check first if the method is registered in any conditions
         $condition = $this->conditionsManager->getConditionByMethodName($methodName);
         if (null !== $condition) {
-            self::initDebugInstance();
             if ($condition instanceof AbstractCondition) {
                 $condition->setDebugInstance(self::$debugInstance);
                 if ($condition->useDebugTracingForIndex()) {
@@ -96,6 +80,7 @@ class Front
 
             $this->conditionsManager->addConditionsOperand(self::$debugInstance, $condition->evaluate());
             $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&');
+            $this->conditionsManager->addCalledConditions($condition);
 
             // explicitly return '$this' to enable chaining
             return $this;
@@ -118,14 +103,28 @@ class Front
         if (isset($debug)) {
             $pass = $this->conditionsManager->evaluateExpressions(self::$debugInstance);
 
+            $return = null;
+            if (true === $pass) {
+                $return = call_user_func_array(array($debug, $methodName), $args);
+            }
+
+            // post processing on called conditions
+            foreach ($this->conditionsManager->getCalledConditions() as $condition) {
+                $condition->postDebug($return);
+            }
+            // reset the called conditions
+            $this->conditionsManager->setCalledConditions(array());
+
             // Reset the debug instance if the method name is prefixed
             if ($this->isMethodNamePrefixed($methodName)) {
                 self::$debugInstance = null;
             }
 
-            if (true === $pass) {
-                return call_user_func_array(array($debug, $methodName), $args);
+            if (null !== $return) {
+                return $return;
             }
+
+            // if nothing passed return regardless to avoid exception. This is like doing nothing
             return;
         }
 
@@ -135,19 +134,44 @@ class Front
         ));
     }
 
-    protected function isMethodNamePrefixed($methodName)
+    /**
+     * Retrieve the instance of this Front class
+     * @param string $writer An optional writer to pass to override the default writer.
+     *                       Note that passing a writer breaks the singleton's
+     *                       only one instance and may impact performance as the Front
+     *                       object is initialized on every call.
+     * @return \FdlDebug\Front
+     */
+    public static function i($writer = null)
     {
-        $configs = Bootstrap::getConfigs();
-        foreach ($configs['debug_prefixes'] as $prefix) {
-            if (0 === strpos($methodName, $prefix)) {
-                return true;
-            }
+        self::initDebugInstance();
+
+        if (null === self::$instance || null !== $writer) {
+            self::$instance = new self($writer);
         }
-        return false;
+        return self::$instance;
     }
 
     /**
-     * Register the custom extensions
+     * Retrieve the conditions manager instance
+     * @return \FdlDebug\Condition\ConditionsManager
+     */
+    public function getConditionsManager()
+    {
+        return $this->conditionsManager;
+    }
+
+    /**
+     * Retrieve the debug instance
+     * @return \FdlDebug\Debug
+     */
+    public function getDebug()
+    {
+       return $this->debug;
+    }
+
+    /**
+     * Register debug extensions
      * @param array $extensions
      */
     public function registerExtensions(array $extensions)
@@ -157,13 +181,33 @@ class Front
         }
 
         foreach ($extensions as $extension) {
-            if (class_exists($extension)) {
+            // check for package extensions first
+            $existingExtension = __NAMESPACE__ . "\\Extension\\" . Utility::underscoreToCamelcase($extension);
+            if (class_exists($existingExtension)) {
+                $extension = new $existingExtension();
+            } elseif (class_exists($extension)) {
                 $extension = new $extension();
-                if ($extension instanceof DebugInterface) {
-                    $extension->setWriter($this->debug->getWriter());
-                    $this->debugExtensions[] = $extension;
-                }
+            } else {
+                continue;
             }
+
+            $extension = new $extension();
+            if ($extension instanceof DebugInterface) {
+                $extension->setWriter($this->debug->getWriter());
+                $this->debugExtensions[] = $extension;
+            }
+        }
+    }
+
+    /**
+     * Initialize a debug instance if its not set
+     * @param void
+     * @return null
+     */
+    public static function initDebugInstance()
+    {
+        if (null === self::$debugInstance) {
+            self::$debugInstance = uniqid();
         }
     }
 
@@ -174,26 +218,29 @@ class Front
      */
     protected function initWriter($writer)
     {
-        if (class_exists($existingWriter = __NAMESPACE__ . "\\Writer\\" . Utility::underscoreToCamelcase($writer))) {
+        $existingWriter = __NAMESPACE__ . "\\Writer\\" . Utility::underscoreToCamelcase($writer);
+        if (class_exists($existingWriter)) {
             return new $existingWriter();
-        }
-
-        if (class_exists($writer)) {
-            new $writer();
+        } elseif (class_exists($writer)) {
+            return new $writer();
         }
 
         throw new \ErrorException("No writer found");
     }
 
     /**
-     * Initialize a debug instance if it does not exist
-     * @param void
-     * @return null
+     * Is the method name prefixed?
+     * @param string $methodName
+     * @return boolean
      */
-    public static function initDebugInstance()
+    protected function isMethodNamePrefixed($methodName)
     {
-        if (null === self::$debugInstance) {
-            self::$debugInstance = uniqid();
+        $configs = Bootstrap::getConfigs();
+        foreach ($configs['debug_prefixes'] as $prefix) {
+            if (0 === strpos($methodName, $prefix)) {
+                return true;
+            }
         }
+        return false;
     }
 }
