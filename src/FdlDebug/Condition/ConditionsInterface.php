@@ -38,7 +38,8 @@ interface ConditionsInterface
 
     /**
      * A hook for any post debug process/logic
-     * @param void|$return The return value is passed automatically
+     * @param $return The return value is passed automatically
+     * @param $passed If the evaluation passed or not
      * @return null
      */
     public function postDebug();

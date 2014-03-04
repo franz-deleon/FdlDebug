@@ -56,7 +56,7 @@ class Bootstrap
 
     /**
      * Return the configs
-     * @return array
+     * @return &array
      */
     public static function &getConfigs()
     {

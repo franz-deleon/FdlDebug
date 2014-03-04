@@ -110,7 +110,7 @@ class Front
 
             // post processing on called conditions
             foreach ($this->conditionsManager->getCalledConditions() as $condition) {
-                $condition->postDebug($return);
+                $condition->postDebug($return, $pass);
             }
             // reset the called conditions
             $this->conditionsManager->setCalledConditions(array());

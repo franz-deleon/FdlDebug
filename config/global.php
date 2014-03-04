@@ -8,7 +8,11 @@ return array(
         'trace_file' => 'fdltrace',             # File name for XDEBUG trace file
     ),
     'writer'     => 'var_dump',                 # Default writer. Available writers ('var_dump'). Using FQNS also qualifies
-    'conditions' => array('boolean', 'range'),  # Registered conditions. Using FQNS also qualifies
+    'conditions' => array(
+        'boolean',
+        'range',
+        'loop_from',
+    ),                                          # Registered conditions. Using FQNS also qualifies
     'debug_prefixes'   => array('pr', 'print'), # Declaration of debug prefixes for callable methods. Example printDebugTrace()
-    'debug_extensions' => array(),              # Extensions for FdlDebug. Use FQNS to declare new extension
+    'debug_extensions' => array('loop_from'),   # Extensions for FdlDebug. Use FQNS to declare new extension
 );
