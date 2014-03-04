@@ -204,7 +204,7 @@ class Front
      * @param void
      * @return null
      */
-    public static function initDebugInstance()
+    protected static function initDebugInstance()
     {
         if (null === self::$debugInstance) {
             self::$debugInstance = uniqid();
