@@ -70,7 +70,7 @@ abstract class AbstractCondition extends DebugAbstract
      * Returns unique index string base of file and line data
      * @return string
      */
-    public function getCreatedIndex()
+    public function getUniqueIndex()
     {
         if (false === $this->useDebugTracingForIndex()) {
             throw new \BadMethodCallException(sprintf(

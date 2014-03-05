@@ -10,7 +10,7 @@ return array(
     'writer'     => 'generic_output',           # Default writer. Available writers ('generic_output'). Using FQNS also qualifies
     'conditions' => array(
         'boolean',
-        'range',
+        'loop_range',
         'loop_from',
     ),                                          # Registered conditions. Using FQNS also qualifies
     'debug_prefixes'   => array('pr', 'print'), # Declaration of debug prefixes for callable methods. Example printDebugTrace()

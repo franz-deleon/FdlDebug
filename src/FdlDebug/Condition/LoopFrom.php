@@ -54,7 +54,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
             $configs['debug_prefixes'][] = 'loopFromFlush';
         }
 
-        $index = $this->getCreatedIndex();
+        $index = $this->getUniqueIndex();
         $this->contentStorage[$index]['expression'] = $fromString;
         $this->contentStorage[$index]['length'] = $length;
 
@@ -118,7 +118,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function postDebug($return = null, $pass = false)
     {
-        $index = $this->getCreatedIndex();
+        $index = $this->getUniqueIndex();
         $instance = $this->getDebugInstance();
         $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
         $this->contentStorage[$index]['content'][$instance]['passed'] = $pass;
