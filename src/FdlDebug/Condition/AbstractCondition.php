@@ -23,24 +23,41 @@ abstract class AbstractCondition extends DebugAbstract
      */
     protected $debugInstance;
 
-
+    /**
+     * The file name from __call
+     * @param string $file
+     * @return \FdlDebug\Condition\AbstractCondition
+     */
     public function setFile($file)
     {
         $this->file = $file;
         return $this;
     }
 
+    /**
+     * Retrieve the file name
+     * @return string
+     */
     public function getFile()
     {
         return $this->file;
     }
 
+    /**
+     * Set the line number from __call
+     * @param int $line
+     * @return \FdlDebug\Condition\AbstractCondition
+     */
     public function setLine($line)
     {
         $this->line = $line;
         return $this;
     }
 
+    /**
+     * Retrieve the line number from __call
+     * @return int
+     */
     public function getLine()
     {
         return $this->line;
@@ -67,7 +84,7 @@ abstract class AbstractCondition extends DebugAbstract
     }
 
     /**
-     * Returns unique index string base of file and line data
+     * Returns unique index string base of concatenated file and line values
      * @return string
      */
     public function getUniqueIndex()
@@ -85,7 +102,7 @@ abstract class AbstractCondition extends DebugAbstract
 
     /**
      * Switch to enable a debug tracing call.
-     * Enabling this will have setLine and setFile initialized.
+     * Enabling this will have setLine() and setFile() initialized.
      *
      * We have this switch as false for performance improvement
      * to avoid debug_backtrace being called everytime.
