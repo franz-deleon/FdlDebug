@@ -1,7 +1,7 @@
 {
     "name": "franz-deleon/fdl-debug",
     "type": "library",
-    "description": "PHP Helper function library for easier debugging",
+    "description": "A simple but awesomely souped-up PHP debugger helper",
     "keywords": [
         "FDL Debug",
         "PHP Debugging"
@@ -16,15 +16,14 @@
     ],
     "minimum-stability": "dev",
     "require": {
-        "php": ">=5.3.3",
-        "ext-xdebug": "*"
-    },
-    "require-dev": {
-        "zendframework/zend-loader": "~2.1"
+        "php": ">=5.3.3"
     },
     "autoload": {
         "psr-0": {
             "FdlDebug": "src/"
-        }
+        },
+        "files": [
+            "Bootstrapper.php"
+        ]
     }
 }
