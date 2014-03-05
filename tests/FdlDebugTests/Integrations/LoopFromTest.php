@@ -225,6 +225,23 @@ class LoopFromTest extends AbstractIntegrationsTestCase
     /**
      * @group test9
      */
+    public function testUsingLoopFromWithBooleanCondAndLoopRangeOnSeparateLines()
+    {
+        $this->assertOutputString("int(2)");
+        for ($x = 1; $x <= 5; $x++) {
+            $this
+                ->Front
+                ->condBoolean($x === 2) // print on count 2
+                ->loopRange($x % 2 === 0) // print if its an even number
+                ->loopFrom('2nd from start', 2) // print from 2nd of loop start
+                ->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
+
+    /**
+     * @group test10
+     */
     public function testUsingLoopFromWithNestedLoops()
     {
         $this->assertOutputString('string(14) "3rd-from-end:3"', 'string(16) "2nd-from-start:2"');
