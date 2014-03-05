@@ -67,10 +67,9 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     {
         $content = array_shift($this->contentStorage);
         $expression = $content['expression'];
-        preg_match('~(?P<offset>[0-9]+)(?:st|nd|rd|th)* from (?P<position>start|beginning|last|end)+~', $expression, $matches);
-        $offset   = $matches['offset'];
-        $position = $matches['position'];
-        $contentCount = count($content['content']);
+        preg_match('~^(?:(?P<offset>[0-9]+)(?:st|nd|rd|th)* from )*(?P<position>start|beginning|last|end)+$~i', $expression, $matches);
+        $offset   = (int) $matches['offset'];
+        $position = strtolower($matches['position']);
         $contentOffset = 0;
 
         if ($position == 'last' || $position == 'end') {
