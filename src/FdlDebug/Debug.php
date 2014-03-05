@@ -44,7 +44,7 @@ class Debug extends DebugAbstract implements DebugInterface
      * @param string $variable
      * @param int $offsetTrace
      */
-    public function printGlobalVars($variable, $offsetTrace = 0)
+    public function printGlobalVar($variable)
     {
         $variable = strtoupper($variable);
         if ($variable == 'SERVER' || $variable == 'GET' || $variable == 'POST'
@@ -52,11 +52,7 @@ class Debug extends DebugAbstract implements DebugInterface
             || $variable == 'ENV' || $variable == 'COOKIE'
         ) {
             $content = $GLOBALS["_$variable"];
-
-            $trace = $this->getBackTrace($offsetTrace);
-            $file = $trace[0]['file'];
-            $line = $trace[0]['line'];
-            $extra['group'] = "pr() (Printing {$variable})";
+            $this->getWriter()->write($content);
         }
     }
 
