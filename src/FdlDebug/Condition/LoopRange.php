@@ -7,23 +7,23 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      * Holds the loop range instances
      * @var array
      */
-    protected static $loopRangeStamp = array();
+    protected $loopRangeStamp = array();
 
     /**
-     * Implementation of getMethod function
-     * @param integer $start
-     * @param integer $end
+     * Implementation of loop range logic
+     * @param integer $start  Where to start outputting the loop
+     * @param integer $length Where to end starting from start
      * @return \FdlDebug\Condition\Range
      */
-    public function loopRange($start, $end = null)
+    public function loopRange($start, $length = null)
     {
         $index = $this->getUniqueIndex();
-        if (empty(self::$loopRangeStamp[$index])) {
-            self::$loopRangeStamp[$index]['iterator'] = 1;
-            self::$loopRangeStamp[$index]['start']    = $start;
-            self::$loopRangeStamp[$index]['end']      = $end;
+        if (empty($this->loopRangeStamp[$index])) {
+            $this->loopRangeStamp[$index]['iterator'] = 1;
+            $this->loopRangeStamp[$index]['start']    = $start;
+            $this->loopRangeStamp[$index]['length']   = $length;
         } else {
-            ++self::$loopRangeStamp[$index]['iterator'];
+            ++$this->loopRangeStamp[$index]['iterator'];
         }
 
         return $this;
@@ -45,10 +45,15 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
     public function evaluate()
     {
         $index = $this->getUniqueIndex();
-        if (!empty(self::$loopRangeStamp[$index])) {
-            if (self::$loopRangeStamp[$index]['iterator'] >= self::$loopRangeStamp[$index]['start']) {
-                if (isset(self::$loopRangeStamp[$index]['end'])) {
-                    if (self::$loopRangeStamp[$index]['iterator'] > self::$loopRangeStamp[$index]['end']) {
+        if (!empty($this->loopRangeStamp[$index])) {
+            $iterator = $this->loopRangeStamp[$index]['iterator'];
+            $start    = $this->loopRangeStamp[$index]['start'];
+            $length   = $this->loopRangeStamp[$index]['length'];
+
+            if ($iterator >= $start) {
+                if (null !== $length) {
+                    $offsetLength = ($start + $length) - 1;
+                    if ($iterator > $offsetLength) {
                         return false;
                     }
                 }
