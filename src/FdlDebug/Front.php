@@ -79,7 +79,7 @@ class Front
             call_user_func_array(array($condition, $methodName), $args);
 
             $this->conditionsManager->addConditionsOperand(self::$debugInstance, $condition->evaluate());
-            $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&');
+            $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&'); //todo: implement conditions operator
             $this->conditionsManager->addCalledConditions($condition);
 
             // explicitly return '$this' to enable chaining
@@ -124,7 +124,7 @@ class Front
                 return $return;
             }
 
-            // if nothing passed return regardless to avoid exception. This is like doing nothing
+            // if nothing passed, then return regardless to avoid an exception. This is like doing nothing
             return;
         }
 
@@ -136,10 +136,10 @@ class Front
 
     /**
      * Retrieve the instance of this Front class
-     * @param string $writer An optional writer to pass to override the default writer.
-     *                       Note that passing a writer breaks the singleton's
-     *                       only one instance and may impact performance as the Front
-     *                       object is initialized on every call.
+     * @param string $writer     An optional writer to pass to override the default writer.
+     *                           Note that passing a writer breaks the singleton's
+     *                           only one instance pattern and may impact performance as the Front
+     *                           object is initialized on every call!
      * @return \FdlDebug\Front
      */
     public static function i($writer = null)
@@ -195,6 +195,11 @@ class Front
             if ($extension instanceof DebugInterface) {
                 $extension->setWriter($this->debug->getWriter());
                 $this->debugExtensions[] = $extension;
+            } else {
+                throw new \ErrorException(sprintf(
+                    "Extension '%s' is required to implement DebugInterface",
+                    get_class($extension)
+                ));
             }
         }
     }

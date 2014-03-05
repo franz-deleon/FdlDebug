@@ -10,6 +10,10 @@ class LoopFrom implements DebugInterface
 {
     protected $writer;
 
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\DebugInterface::setWriter()
+     */
     public function setWriter(WriterInterface $writer)
     {
         $this->writer = $writer;

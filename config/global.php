@@ -13,6 +13,10 @@ return array(
         'loop_range',
         'loop_from',
     ),                                          # Registered conditions. Using FQNS also qualifies
-    'debug_prefixes'   => array('pr', 'print'), # Declaration of debug prefixes for callable methods. Example printDebugTrace()
+    'debug_prefixes'   => array(
+        'pr',
+        'print',
+        'loopFromFlush'
+    ),                                          # Declaration of debug prefixes for callable methods. Example printDebugTrace()
     'debug_extensions' => array('loop_from'),   # Extensions for FdlDebug. Use FQNS to declare new extension
 );

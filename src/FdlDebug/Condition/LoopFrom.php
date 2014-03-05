@@ -48,12 +48,6 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function loopFrom($fromString, $length = null)
     {
-        // explicitly hack the prefixes and add a loopFromEnd
-        $configs =& Bootstrap::getConfigs();
-        if (!in_array('loopFromEnd', $configs['debug_prefixes'])) {
-            $configs['debug_prefixes'][] = 'loopFromFlush';
-        }
-
         $index = $this->getUniqueIndex();
         $this->contentStorage[$index]['expression'] = $fromString;
         $this->contentStorage[$index]['length'] = $length;

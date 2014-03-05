@@ -201,7 +201,7 @@ class LoopFromTest extends AbstractIntegrationsTestCase
     /**
      * @group test7
      */
-    public function testUsingLoopFromStartWithLegth2()
+    public function testUsingLoopFromStartWithLength2()
     {
         $this->assertOutputString("int(2)", "int(3)");
         for ($x = 1; $x <= 5; $x++) {
@@ -250,6 +250,24 @@ class LoopFromTest extends AbstractIntegrationsTestCase
             for ($x = 1; $x <= 5; $x++) {
                 $this->Front->loopFrom('2nd from start', 1)->pr("2nd-from-start:" . $x);
             }
+        }
+        $this->Front->loopFromFlush();
+    }
+
+    /**
+     * @group test11
+     */
+    public function testUsingLoopFromStartWithFrom2ndEndAndDoubleLoopUse()
+    {
+        $this->assertOutputString("int(2)");
+        for ($x = 1; $x <= 5; $x++) {
+            $this->Front->loopFrom('2nd from start', 1)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+
+        $this->assertOutputString("int(9)");
+        for ($i = 6; $i <= 10; $i++) {
+            $this->Front->loopFrom('2nd from last', 1)->pr($i);
         }
         $this->Front->loopFromFlush();
     }

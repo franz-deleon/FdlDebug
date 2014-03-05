@@ -91,7 +91,7 @@ abstract class AbstractCondition extends DebugAbstract
     {
         if (false === $this->useDebugTracingForIndex()) {
             throw new \BadMethodCallException(sprintf(
-                "%s::useDebugTracingForIndex needs to enabled for %s",
+                "%s::useDebugTracingForIndex() needs to enabled for %s",
                 __CLASS__,
                 __FUNCTION__
             ));
