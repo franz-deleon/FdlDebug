@@ -22,15 +22,8 @@ class LoopFrom implements DebugInterface
     public function loopFromEnd()
     {
         $conditionsManager = Front::i()->getConditionsManager();
-        $loopFromCond   = $conditionsManager->getConditions('FdlDebug\\Condition\\LoopFrom');
-
-        // we have the impression that all values returned by getContentStorage
-        // passed the evaluation check. We just have to recheck against the loopFrom expression
-        $contentStorage =& $loopFromCond->getContentStorage();
-
-        // treat the array as a stack so each call to loopEnd from only evaluates to one
-        $contentStorage = array_shift($contentStorage);
-
-
+        $loopFromCond   = $conditionsManager->getConditions('FdlDebug\Condition\LoopFrom');
+        $slicedStack = $loopFromCond->sliceStack();
+        var_dump($slicedStack);
     }
 }

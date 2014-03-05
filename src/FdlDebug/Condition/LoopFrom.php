@@ -12,7 +12,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
     protected $loopFromEndKey;
 
-    public function loopFrom($fromString)
+    public function loopFrom($fromString, $length = null)
     {
         // explicitly hack the prefixes and add a loopFromEnd
         $configs =& Bootstrap::getConfigs();
@@ -25,6 +25,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
         $index = $this->getCreatedIndex();
         $this->contentStorage[$index]['expression'] = $fromString;
+        $this->contentStorage[$index]['length'] = $length;
 
         if (false === $this->obStart) {
             $this->obStart = true;
@@ -33,13 +34,12 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         }
     }
 
-    public function postDebug($return = null, $passed = false)
+    public function postDebug($return = null, $pass = false)
     {
-        if (true === $passed) {
-            $index = $this->getCreatedIndex();
-            $instance = $this->getDebugInstance();
-            $this->contentStorage[$index]['content'][$instance] = $return ?: ob_get_contents();
-        }
+        $index = $this->getCreatedIndex();
+        $instance = $this->getDebugInstance();
+        $this->contentStorage[$index]['content'][$instance]['value'] = $return ?: ob_get_contents();
+        $this->contentStorage[$index]['content'][$instance]['pass']  = $pass;
 
         // turn off output buffering
         if (true === $this->obStart) {
@@ -48,7 +48,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         }
     }
 
-    public function &getContentStorage()
+    public function getContentStorage()
     {
         return $this->contentStorage;
     }
@@ -63,13 +63,35 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         return 'loopFrom';
     }
 
+    public function sliceStack()
+    {
+        $content = array_shift($this->contentStorage);
+        $expression = $content['expression'];
+        preg_match('~(?P<offset>[0-9]+)(?:st|nd|rd|th)* from (?P<position>start|beginning|last|end|)+~', $expression, $matches);
+        $offset   = $matches['offset'];
+        $position = $matches['position'];
+        $contentCount = count($content['content']);
+        $contentOffset = 0;
+
+        if ($position == 'last' || $position == 'end') {
+            $contentOffset = (int) "-{$offset}";
+        } else {
+            $contentOffset = $offset - 1;
+        }
+
+        return array_slice($content['content'], $contentOffset, $content['length']);
+    }
+
     /**
-     * We return true so we store every output.
+     * We return true so we store every output for default
      * We do the evaluation using Extension\LoopFrom
      * @see \FdlDebug\Condition\ConditionsInterface::evaluate()
      */
-    public function evaluate()
+    public function evaluate($evaluateStack = false)
     {
+        if (true === $evaluateStack) {
+
+        }
         return true;
     }
 
