@@ -7,7 +7,7 @@ return array(
         'trace_log'  => '/tmp/fdldebug',        # Path for trace log file for XDEBUG
         'trace_file' => 'fdltrace',             # File name for XDEBUG trace file
     ),
-    'writer'     => 'var_dump',                 # Default writer. Available writers ('var_dump'). Using FQNS also qualifies
+    'writer'     => 'generic_output',           # Default writer. Available writers ('generic_output'). Using FQNS also qualifies
     'conditions' => array(
         'boolean',
         'range',
