@@ -120,7 +120,7 @@ class Front
                 self::$debugInstance = null;
             }
 
-            if (null !== $return) {
+            if (!empty($return)) {
                 return $return;
             }
 
