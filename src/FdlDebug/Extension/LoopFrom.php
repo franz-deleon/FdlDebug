@@ -16,11 +16,15 @@ class LoopFrom implements DebugInterface
     }
 
     /**
-     * The actual evaluation of a loopFrom happens here in an extension
-     * Why? Because we have to assume that we cannot get the
-     * exact count of some loops e.g. streams or resources or some dynamic foreach
+     * Flushes the stored loopFrom stack.
+     * We have to assume that we cannot get the
+     * exact count of some array loops e.g. streams, resources or some dynamic foreach/arrays.
+     * Having this method placed outside the end of the loop solves this problem.
+     *
+     * @param void
+     * @return null
      */
-    public function loopFromEnd($return = false)
+    public function loopFromFlush()
     {
         $conditionsManager = Front::i()->getConditionsManager();
         $loopFromCond = $conditionsManager->getConditions('FdlDebug\Condition\LoopFrom');

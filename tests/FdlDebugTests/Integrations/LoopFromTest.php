@@ -1,12 +1,12 @@
 <?php
-namespace FdlDebugTests;
+namespace FdlDebugTests\Integrations;
 
 use FdlDebug;
 
 /**
  * Front test case.
  */
-class LoopFromTest extends \PHPUnit_Framework_TestCase
+class LoopFromTest extends AbstractIntegrationsTestCase
 {
     /**
      * @var Front
@@ -46,11 +46,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromEnd()
     {
-        $this->expectOutputString($this->formatOutput("int(5)"));
+        $this->assertOutputString("int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('end')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -58,11 +58,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromEndWithExpression1stFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(5)"));
+        $this->assertOutputString("int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('1st from end')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -70,11 +70,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromEndWithExpression2ndFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(4)", "int(5)"));
+        $this->assertOutputString("int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('2nd from end')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -82,11 +82,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromEndWithExpression3rdFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(3)", "int(4)", "int(5)"));
+        $this->assertOutputString("int(3)", "int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('3rd from end')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -94,11 +94,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromEndWithExpression4thFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(2)", "int(3)", "int(4)", "int(5)"));
+        $this->assertOutputString("int(2)", "int(3)", "int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('4th from end')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -106,11 +106,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromStart()
     {
-        $this->expectOutputString($this->formatOutput("int(1)", "int(2)", "int(3)", "int(4)", "int(5)"));
+        $this->assertOutputString("int(1)", "int(2)", "int(3)", "int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('start')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -118,11 +118,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromStartWithExpression1stFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(1)", "int(2)", "int(3)", "int(4)", "int(5)"));
+        $this->assertOutputString("int(1)", "int(2)", "int(3)", "int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('1st from start')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -130,11 +130,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromStartWithExpression2ndFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(2)", "int(3)", "int(4)", "int(5)"));
+        $this->assertOutputString("int(2)", "int(3)", "int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('2nd from start')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -142,11 +142,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromStartWithExpression3rdFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(3)", "int(4)", "int(5)"));
+        $this->assertOutputString("int(3)", "int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('3rd from start')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -154,25 +154,24 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoopFromUsingFromStartWithExpression4thFrom()
     {
-        $this->expectOutputString($this->formatOutput("int(4)", "int(5)"));
+        $this->assertOutputString("int(4)", "int(5)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('4th from start')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
      * @group test4
      */
-    public function testUsingDoubleLoopFromCalls()
+    public function testUsingMultipleLoopFromCalls()
     {
-        $this->expectOutputString($this->formatOutput("int(5)", "int(1)"));
+        $this->assertOutputString("int(5)", "int(1)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('end', 1)->pr($x);
             $this->Front->loopFrom('start', 1)->pr($x);
         }
-        $this->Front->loopFromEnd();
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -184,7 +183,7 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('6th from end')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -196,7 +195,7 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('6th from start')->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -204,11 +203,11 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testUsingLoopFromStartWithLegth2()
     {
-        $this->expectOutputString($this->formatOutput("int(2)", "int(3)"));
+        $this->assertOutputString("int(2)", "int(3)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->loopFrom('2nd from start', 2)->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
     /**
@@ -216,16 +215,25 @@ class LoopFromTest extends \PHPUnit_Framework_TestCase
      */
     public function testUsingLoopFromWithBooleanCond()
     {
-        $this->expectOutputString($this->formatOutput("int(2)"));
+        $this->assertOutputString("int(2)");
         for ($x = 1; $x <= 5; $x++) {
             $this->Front->condBoolean($x === 2)->loopFrom('2nd from start', 2)->pr($x);
         }
-        $this->Front->loopFromEnd();
+        $this->Front->loopFromFlush();
     }
 
-    protected function formatOutput($output)
+    /**
+     * @group test9
+     */
+    public function testUsingLoopFromWithNestedLoops()
     {
-        $args = func_get_args();
-        return implode("\n", $args) . "\n";
+        $this->assertOutputString('string(14) "3rd-from-end:3"', 'string(16) "2nd-from-start:2"');
+        for ($i = 1; $i <= 5; $i++) {
+            $this->Front->loopFrom('3rd from end', 1)->pr("3rd-from-end:" . $i);
+            for ($x = 1; $x <= 5; $x++) {
+                $this->Front->loopFrom('2nd from start', 1)->pr("2nd-from-start:" . $x);
+            }
+        }
+        $this->Front->loopFromFlush();
     }
 }

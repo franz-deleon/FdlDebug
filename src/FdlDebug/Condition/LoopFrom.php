@@ -6,10 +6,18 @@ use FdlDebug\StdLib\Utility;
 
 class LoopFrom extends AbstractCondition implements ConditionsInterface
 {
+    /**
+     * Start string identifiers
+     * @var array
+     */
     protected $startRegexIdentifiers = array(
         'first', 'start', 'beginning',
     );
 
+    /**
+     * End string identifiers
+     * @var array
+     */
     protected $endRegexIdentifiers = array(
         'last', 'end', 'ending',
     );
@@ -23,7 +31,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
     /**
      * obStart flag is ob is started
-     * @var unknown
+     * @var boolean
      */
     protected $obStart = false;
 
@@ -33,12 +41,17 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     protected $contentStorage = array();
 
+    /**
+     * Callback method
+     * @param string $fromString
+     * @param string $length
+     */
     public function loopFrom($fromString, $length = null)
     {
         // explicitly hack the prefixes and add a loopFromEnd
         $configs =& Bootstrap::getConfigs();
         if (!in_array('loopFromEnd', $configs['debug_prefixes'])) {
-            $configs['debug_prefixes'][] = 'loopFromEnd';
+            $configs['debug_prefixes'][] = 'loopFromFlush';
         }
 
         $index = $this->getCreatedIndex();
@@ -52,34 +65,9 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         }
     }
 
-    public function postDebug($return = null, $pass = false)
-    {
-        $index = $this->getCreatedIndex();
-        $instance = $this->getDebugInstance();
-        $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
-        $this->contentStorage[$index]['content'][$instance]['passed'] = $pass;
-
-        // turn off output buffering
-        if (true === $this->obStart) {
-            $this->obStart = false;
-            ob_clean();
-        }
-    }
-
-    public function getContentStorage()
-    {
-        return $this->contentStorage;
-    }
-
-    public function evaluationCallbackMethod()
-    {
-        return 'loopFrom';
-    }
-
     /**
-     * Slices the content storage array
-     * shifting the first content on each call.
-     * This is using a LIFO (last in, first out) process.
+     * Slices the content storage array one content at a time per call.
+     * This is using a FIFO (first in, first out) process.
      *
      * @return array|null
      */
@@ -116,7 +104,43 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     }
 
     /**
-     * We return true so we store every output for default
+     * Retrieve the content storage
+     * @return array
+     */
+    public function getContentStorage()
+    {
+        return $this->contentStorage;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
+     */
+    public function postDebug($return = null, $pass = false)
+    {
+        $index = $this->getCreatedIndex();
+        $instance = $this->getDebugInstance();
+        $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
+        $this->contentStorage[$index]['content'][$instance]['passed'] = $pass;
+
+        // turn off output buffering
+        if (true === $this->obStart) {
+            $this->obStart = false;
+            ob_clean();
+        }
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::evaluationCallbackMethod()
+     */
+    public function evaluationCallbackMethod()
+    {
+        return 'loopFrom';
+    }
+
+    /**
+     * We return true so we store every output for default.
      * We do the evaluation using Extension\LoopFrom
      * @see \FdlDebug\Condition\ConditionsInterface::evaluate()
      */
@@ -125,6 +149,10 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         return true;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\AbstractCondition::useDebugTracingForIndex()
+     */
     public function useDebugTracingForIndex()
     {
         return true;
