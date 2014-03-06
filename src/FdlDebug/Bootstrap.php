@@ -32,7 +32,7 @@ class Bootstrap
             self::$configs = Utility::merge(self::$configs, $localConfig);
         }
         if (null !== $customConfigFile) {
-            if (file_exists($customConfigFile)) {
+            if (is_string($customConfigFile) && file_exists($customConfigFile)) {
                 $customConfig = include $customConfigFile;
             } elseif (is_array($customConfigFile)) {
                 $customConfig = $customConfigFile;
