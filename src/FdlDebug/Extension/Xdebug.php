@@ -7,6 +7,9 @@ use FdlDebug\Writer\WriterInterface;
 
 class Xdebug implements DebugInterface
 {
+    /**
+     * @var WriterInterface
+     */
     protected $writer;
 
     /**
@@ -21,24 +24,49 @@ class Xdebug implements DebugInterface
     /**
      * Trace the instances of a variable
      * @param string $variable The name of the variable to trace
+     * @param boolean $showVendor
      * @return null
      */
-    public function printXdebugTracedVar($variable)
+    public function printXdebugTracedVar($variable, $showVendor = false)
     {
         if (StdLib\Utility::isXDebugEnabled()) {
             if (!is_string($variable)) {
                 throw new \ErrorException('printTracedVariable() only accepts string.');
             }
 
-            if (!empty($variable)) {
-                $output = $this->xdebugParseVariable($variable);
-                $this->writer->write($output);
+            if (StdLib\Utility::isXDebugTraceStart()) {
+                if (!empty($variable)) {
+                    $this->writer->write($this->xdebugParseVariable($variable, $showVendor));
+                }
+                xdebug_stop_trace();
+            } else {
+                $this->writer->write('XDebug tracing has not started. Start it first.');
             }
-
-            xdebug_stop_trace();
         } else {
             throw new \ErrorException('Xdebug is disabled');
         }
+    }
+
+    /**
+     * Parse the search string from the xdebug trace log
+     * @param string  $var
+     * @param boolean $showVendor
+     * @return array
+     */
+    public function xdebugParseVariable($var, $showVendor)
+    {
+        $var = trim($var, '$ ');
+
+        $traceFile = StdLib\Utility::getXdebugTraceFile();
+        $exec = "grep -i \"\\\$*>{$var}\\b\" "  . $traceFile;
+        exec($exec, $output);
+        $exec = "grep -i \"\\\${$var}\\b\" " . $traceFile;
+        exec($exec, $output);
+
+        $this->xdebugCleanTrace($output);
+        $this->xdebugFormatTrace($output, $var);
+
+        return $output;
     }
 
     /**
@@ -95,26 +123,5 @@ class Xdebug implements DebugInterface
         }
 
         $contents = $newContent;
-    }
-
-    /**
-     * Parse the search string from the xdebug trace log
-     * @param string $var
-     * @return array
-     */
-    public function xdebugParseVariable($var)
-    {
-        $var = trim($var, '$ ');
-
-        $traceFile = StdLib\Utility::getXdebugTraceFile();
-        $exec = "grep -i \"\\\$*>{$var}\\b\" "  . $traceFile;
-        exec($exec, $output);
-        $exec = "grep -i \"\\\${$var}\\b\" " . $traceFile;
-        exec($exec, $output);
-
-        $this->xdebugCleanTrace($output);
-        $this->xdebugFormatTrace($output, $var);
-
-        return $output;
     }
 }

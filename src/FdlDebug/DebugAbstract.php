@@ -49,7 +49,7 @@ abstract class DebugAbstract implements DebugInterface
         $backTrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
         $this->cleanTrace($backTrace);
 
-        if (is_integer($offset)) {
+        if (is_integer($offset) && $offset !== 0) {
             for ($i = 1; $i <= $offset; ++$i) {
                 array_shift($backTrace);
             }
@@ -60,21 +60,22 @@ abstract class DebugAbstract implements DebugInterface
 
     /**
      * Runs a get_included_files() and filters result
-     * @param void
+     * @param  boolean $showVendor
      * @return array
      */
-    public function getFileTrace()
+    public function getFileTrace($showVendor = false)
     {
-        $fileTrace = get_included_files();
         $files = array();
-        foreach ($fileTrace as $key => $file) {
-            if (strpos($file, '/Zend/') === false
-                && strpos($file, '/nav_debug/') === false
-                && strpos($file, 'phar:') === false
+        foreach (get_included_files() as $key => $file) {
+            if (stripos($file, '/fdldebug/') !== false
+                || stripos($file, 'phar:') !== false
+                || (stripos($file, '/vendor/') !== false && $showVendor == false)
             ) {
-                $files[$key]['order'] = ($key + 1);
-                $files[$key]['file']  = $file;
+                continue;
             }
+
+            $files[$key]['order'] = ($key + 1);
+            $files[$key]['file']  = $file;
         }
 
         array_unshift($files, array('Called Order', 'File'));

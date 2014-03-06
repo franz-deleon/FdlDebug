@@ -25,18 +25,28 @@ class Debug extends DebugAbstract
 
     /**
      * Print PHP's global variables
-     * @param string $variable
+     * @param string $type
      * @param int $offsetTrace
      */
-    public function printGlobalVar($variable)
+    public function printGlobal($type = null)
     {
-        $variable = strtoupper($variable);
-        if ($variable == 'SERVER' || $variable == 'GET' || $variable == 'POST'
-            || $variable == 'FILES' || $variable == 'REQUEST' || $variable == 'SESSION'
-            || $variable == 'ENV' || $variable == 'COOKIE'
-        ) {
-            $content = $GLOBALS["_$variable"];
-            $this->getWriter()->write($content);
+        $globalsList = array('SERVER', 'GET', 'POST', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE');
+
+        if (null !== $type) {
+            $type = strtoupper($type);
+            if (in_array($type, $globalsList)) {
+                if (isset($GLOBALS["_$type"])) {
+                    $this->getWriter()->write($GLOBALS["_$type"]);
+                }
+            }
+        } else {
+            $globals = array();
+            foreach ($globalsList as $globalType) {
+                if (isset($GLOBALS["_$globalType"])) {
+                    $globals[$globalType] = $GLOBALS["_$globalType"];
+                }
+            }
+            $this->getWriter()->write($globals);
         }
     }
 
@@ -51,30 +61,22 @@ class Debug extends DebugAbstract
         $trace = $this->findTraceKeyAndSlice($trace, 'function', __FUNCTION__, 3); // 3 to offset the Front class __call
         $trace[0]['notice'] = "END OF TRACE";
 
-        $this->getWriter()->write($trace);
+        $this->getWriter()->write(array_reverse($trace));
     }
 
     /**
      * Run a file trace
-     * @param void
+     * @param $showVendor
      * @return null
      */
-    public function printFiles()
+    public function printFiles($showVendor = false)
     {
-        $trace = $this->getBackTrace();
-        $file  = $trace[0]['file'];
-        $line  = $trace[0]['line'];
-        $extra['group'] = 'prFiles() (Print Included Files)';
-
-        $fileTrace = $this->getFileTrace();
-        array_pop($fileTrace);
+        $fileTrace = $this->getFileTrace($showVendor);
         array_shift($fileTrace);
-        $fileTrace = array_reverse($fileTrace);
 
         $last['notice'] = 'END OF TRACE';
-        $last['file'] = $file;
-        array_unshift($fileTrace, $last);
+        $fileTrace[] = $last;
 
-        $this->getWriter()->write($trace);
+        $this->getWriter()->write($fileTrace);
     }
 }

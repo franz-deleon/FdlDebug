@@ -89,6 +89,20 @@ abstract class Utility
     }
 
     /**
+     * Should the xdebug trace start?
+     * @return boolean
+     */
+    public static function isXDebugTraceStart()
+    {
+        return (
+            !empty($_COOKIE['XDEBUG_TRACE'])
+            || !empty($_GET['XDEBUG_TRACE'])
+            || !empty($_POST['XDEBUG_TRACE'])
+            || !empty($_REQUEST['XDEBUG_TRACE'])
+        );
+    }
+
+    /**
      * Is the session already started?
      * @return boolean
      */
@@ -109,7 +123,7 @@ abstract class Utility
      * @param void
      * @return null
      */
-    function sessionStart()
+    public function sessionStart()
     {
         if (static::isSessionStarted() === FALSE) {
             session_start();
