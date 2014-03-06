@@ -71,7 +71,10 @@ class Front
                 $condition->setDebugInstance(self::$debugInstance);
                 if ($condition->useDebugTracingForIndex()) {
                     $trace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
-                    $condition->setFile($trace[0]['file'])->setLine($trace[0]['line']);
+                    $condition
+                        ->setFile($trace[0]['file'])
+                        ->setLine($trace[0]['line'])
+                        ->setMethod($methodName);
                 }
             }
 

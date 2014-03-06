@@ -24,6 +24,12 @@ abstract class AbstractCondition extends DebugAbstract
     protected $debugInstance;
 
     /**
+     * Method name
+     * @var string
+     */
+    protected $method;
+
+    /**
      * The file name from __call
      * @param string $file
      * @return \FdlDebug\Condition\AbstractCondition
@@ -64,6 +70,24 @@ abstract class AbstractCondition extends DebugAbstract
     }
 
     /**
+     * Set the method
+     * @param string $method
+     */
+    public function setMethod($method)
+    {
+        $this->method = $method;
+    }
+
+    /**
+     * Retrieve the method
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
      * Debug instance
      * @param string $debugInstance
      * @return \FdlDebug\Condition\AbstractCondition
@@ -97,7 +121,15 @@ abstract class AbstractCondition extends DebugAbstract
             ));
         }
 
-        return $this->getFile() . ':' . $this->getLine();
+        $file   = $this->getFile();
+        $method = $this->getMethod();
+        $line   = $this->getLine();
+
+        if (null === $file || null === $method || null === $line) {
+            throw new \ErrorException("Cannot assemble unique index");
+        }
+
+        return $file . ':' . $method . ':' . $line;
     }
 
     /**
