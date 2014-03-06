@@ -3,28 +3,8 @@ namespace FdlDebug;
 
 use FdlDebug\Writer\WriterInterface;
 
-class Debug extends DebugAbstract implements DebugInterface
+class Debug extends DebugAbstract
 {
-    protected $writer;
-
-    /**
-     * @param string $writer
-     */
-    public function __construct($writer)
-    {
-        $this->setWriter($writer);
-    }
-
-    public function setWriter(WriterInterface $writer)
-    {
-        $this->writer = $writer;
-    }
-
-    public function getWriter()
-    {
-        return $this->writer;
-    }
-
     /**
      * Alias to printNow
      * @param mixed $content
@@ -70,6 +50,8 @@ class Debug extends DebugAbstract implements DebugInterface
         $trace = $this->getBackTrace();
         $trace = $this->findTraceKeyAndSlice($trace, 'function', __FUNCTION__, 3); // 3 to offset the Front class __call
         $trace[0]['notice'] = "END OF TRACE";
+
+        $this->getWriter()->write($trace);
     }
 
     /**
@@ -80,8 +62,8 @@ class Debug extends DebugAbstract implements DebugInterface
     public function printFiles()
     {
         $trace = $this->getBackTrace();
-        $file = $trace[0]['file'];
-        $line = $trace[0]['line'];
+        $file  = $trace[0]['file'];
+        $line  = $trace[0]['line'];
         $extra['group'] = 'prFiles() (Print Included Files)';
 
         $fileTrace = $this->getFileTrace();
@@ -92,5 +74,7 @@ class Debug extends DebugAbstract implements DebugInterface
         $last['notice'] = 'END OF TRACE';
         $last['file'] = $file;
         array_unshift($fileTrace, $last);
+
+        $this->getWriter()->write($trace);
     }
 }

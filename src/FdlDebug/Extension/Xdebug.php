@@ -34,6 +34,8 @@ class Xdebug implements DebugInterface
                 $output = $this->xdebugParseVariable($variable);
                 $this->writer->write($output);
             }
+
+            xdebug_stop_trace();
         } else {
             throw new \ErrorException('Xdebug is disabled');
         }

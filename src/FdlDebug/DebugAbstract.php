@@ -1,8 +1,44 @@
 <?php
 namespace FdlDebug;
 
-abstract class DebugAbstract
+use FdlDebug\Writer\WriterInterface;
+
+abstract class DebugAbstract implements DebugInterface
 {
+    protected $writer;
+
+    /**
+     * Constructor.
+     * Pass the writer
+     *
+     * @param string $writer
+     */
+    public function __construct($writer = null)
+    {
+        if (null !== $writer) {
+            $this->setWriter($writer);
+        }
+    }
+
+    /**
+     * Return the writer
+     * @return WriterInterface
+     */
+    public function getWriter()
+    {
+        return $this->writer;
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\DebugInterface::setWriter()
+     */
+    public function setWriter(WriterInterface $writer)
+    {
+        $this->writer = $writer;
+        return $this;
+    }
+
     /**
      * Runs a PHP native debug_backtrace
      * @param void
