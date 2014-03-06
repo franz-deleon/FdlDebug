@@ -52,8 +52,31 @@ class CondBooleanTest extends AbstractIntegrationsTestCase
     /**
      * @group test2
      */
-    public function testGlobalVar()
+    public function testLoopCondBooleanReturnsNothingOnFalse()
     {
-        $this->Front->printGlobalVar('SERVER');
+        $this->expectOutputString("");
+        $this->Front->condBoolean(1 === 2)->pr("hello world");
+    }
+
+    /**
+     * @group test3
+     */
+    public function testLoopCondBooleanOnNewLine()
+    {
+        $this->assertOutputString('string(11) "hello world"');
+        $this->Front
+            ->condBoolean(true)
+            ->pr("hello world");
+    }
+
+    /**
+     * @group test3
+     */
+    public function testLoopCondBooleanIntegratesWithOtherConditionals()
+    {
+        $this->assertOutputString('int(3)');
+        for ($x = 1; $x <= 5; $x++) {
+            $this->Front->condBoolean($x === 3)->loopRange(3, 1)->pr($x);
+        }
     }
 }
