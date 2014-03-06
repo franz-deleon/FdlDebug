@@ -34,6 +34,10 @@ class Debug extends DebugAbstract implements DebugInterface
         return $this->printNow($content);
     }
 
+    /**
+     * Print the content now
+     * @param mixed $content
+     */
     public function printNow($content)
     {
         $this->getWriter()->write($content);
@@ -98,17 +102,12 @@ class Debug extends DebugAbstract implements DebugInterface
     public function printTracedVariable($variable)
     {
         if (!is_string($variable)) {
-            throw new \ErrorException('trVar() only accepts string.');
+            throw new \ErrorException('printTracedVariable() only accepts string.');
         }
 
         if (!empty($variable)) {
-            $trace = $this->getBackTrace();
-            if ($trace[0]['function'] == 'traceVariable') array_shift($trace);
-            $file = $trace[0]['file'];
-            $line = $trace[0]['line'];
-            $extra['group'] = 'traceVariable() (Variable Tracing)';
-
             $output = $this->parseVariableFromXdebug($variable);
+            $this->getWriter()->write($output);
         }
     }
 }

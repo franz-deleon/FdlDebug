@@ -47,21 +47,6 @@ abstract class DebugAbstract
     }
 
     /**
-     * Is XDebug enabled?
-     * @param void
-     * @return boolean
-     */
-    public function isXDebugEnabled()
-    {
-        if (function_exists('xdebug_is_enabled')) {
-            if (xdebug_is_enabled() !== true) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Parse the search string from the xdebug trace log
      * @param string $search
      * @return array
@@ -77,8 +62,8 @@ abstract class DebugAbstract
         exec($exec, $output);
 
         $extra['variable'] = $search;
-        $this->cleanXdebugTrace($output);
-        $this->cleanTraceVar($output, $search);
+        $this->formatXdebugTrace($output);
+        $this->formatXdebugTraceVariable($output, $search);
 
         return $output;
     }
@@ -117,13 +102,15 @@ abstract class DebugAbstract
      * @param boolean $showZF Should we output the ZF library in the trace?
      * @return array
      */
-    protected function cleanXdebugTrace(array &$trace, $showZF = false)
+    protected function formatXdebugTrace(array &$trace, $showVendor = false)
     {
         $cleanedOutput = array();
         foreach ($trace as $key => $val) {
-            if (strpos($val, "nav_debug") === false && (strpos($val, 'library/Zend') === false || $showZF == true)) {
-                $val = trim($val);
-                $lastSpace = (int) strrpos($val, ' ');
+            if (strpos($val, "fdldebug") === false
+                && (strpos($val, 'vendor') === false || $showVendor == true)
+            ) {
+                $val              = trim($val);
+                $lastSpace        = (int) strrpos($val, ' ');
                 $fileNameWithLine = trim(substr($val, $lastSpace));
                 $fileNameArray    = explode(":", $fileNameWithLine); // separate the file from linenumber
 
@@ -133,6 +120,36 @@ abstract class DebugAbstract
             }
         }
         $trace = $cleanedOutput;
+    }
+
+    /**
+     * Header to clean the trace_var array
+     * @param array $contents
+     * @param string $var
+     */
+    protected function formatXdebugTraceVariable(array &$contents, $var = '')
+    {
+        $newContent = array();
+        foreach ($contents as $key => $content) {
+            $newContent[$key]["file"] = $content['file'];
+            $newContent[$key]["line"] = $content['line'];
+
+            if (!empty($var)) {
+                preg_match_all("~(\\\${$var} = .*?)[;,\s\)\}]~i", $content['initialization'], $matches);
+                if (!empty($matches[1])) {
+                    $newContent[$key]["var(\${$var}) assignment"] = $matches[1];
+                } else {
+                    $newContent[$key]["var(\${$var}) assignment"] = 'see initialization ▼';
+                }
+            }
+
+            $initialization = preg_replace(array('~\\\t~', '~\\\n~', '~\\\~'), array(' ', ''), $content['initialization']);
+            $initialization = preg_replace('~\s\s+~', ' ', $initialization);
+
+            $newContent[$key]["initialization"] = $initialization;
+        }
+
+        $contents = $newContent;
     }
 
     /**
@@ -159,35 +176,5 @@ abstract class DebugAbstract
         array_shift($cleanedTrace);
 
         $trace = $cleanedTrace;
-    }
-
-    /**
-     * Header to clean the trace_var array
-     * @param array $contents
-     * @param string $var
-     */
-    protected function cleanTraceVar(array &$contents, $var = '')
-    {
-        $cleanedContent = array();
-        foreach ($contents as $key => $content) {
-            $cleanedContent[$key]["file"] = $content['file'];
-            $cleanedContent[$key]["line"] = $content['line'];
-
-            if (!empty($var)) {
-                preg_match_all("~(\\\${$var} = .*?)[;,\s\)\}]~i", $content['initialization'], $matches);
-                if (!empty($matches[1])) {
-                    $cleanedContent[$key]["var(\${$var}) assignment"] = $matches[1];
-                } else {
-                    $cleanedContent[$key]["var(\${$var}) assignment"] = 'see initialization';
-                }
-            }
-
-            $initialization = preg_replace(array('~\\\t~', '~\\\n~', '~\\\~'), array(' ', ''), $content['initialization']);
-            $initialization = preg_replace('~\s\s+~', ' ', $initialization);
-
-            $cleanedContent[$key]["initialization"] = $initialization;
-        }
-
-        $contents = $cleanedContent;
     }
 }

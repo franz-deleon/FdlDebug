@@ -17,3 +17,12 @@ ini_set('xdebug.var_display_max_children', 256);
 ini_set('xdebug.collect_params', 2);
 ini_set('xdebug.collect_return', 0);
 ini_set('xdebug.show_mem_delta', 0);
+
+if (!empty($_COOKIE['XDEBUG_TRACE'])
+    || !empty($_GET['XDEBUG_TRACE'])
+    || !empty($_POST['XDEBUG_TRACE'])
+) {
+    if (\FdlDebug\StdLib\Utility::isXDebugEnabled()) {
+        xdebug_start_trace();
+    }
+}

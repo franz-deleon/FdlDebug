@@ -60,4 +60,47 @@ abstract class Utility
         $array = array_keys($array);
         return array_pop($array);
     }
+
+    /**
+     * Is XDebug enabled?
+     * @param void
+     * @return boolean
+     */
+    public static function isXDebugEnabled()
+    {
+        if (function_exists('xdebug_is_enabled')) {
+            if (xdebug_is_enabled() !== true) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Is the session already started?
+     * @return boolean
+     */
+    public function isSessionStarted()
+    {
+        if (php_sapi_name() !== 'cli') {
+            if (version_compare(phpversion(), '5.4.0', '>=')) {
+                return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+            } else {
+                return session_id() === '' ? FALSE : TRUE;
+            }
+        }
+        return FALSE;
+    }
+
+    /**
+     * Starts a php session
+     * @param void
+     * @return null
+     */
+    function sessionStart()
+    {
+        if (static::isSessionStarted() === FALSE) {
+            session_start();
+        }
+    }
 }

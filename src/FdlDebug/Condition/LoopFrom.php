@@ -1,9 +1,6 @@
 <?php
 namespace FdlDebug\Condition;
 
-use FdlDebug\Bootstrap;
-use FdlDebug\StdLib\Utility;
-
 class LoopFrom extends AbstractCondition implements ConditionsInterface
 {
     /**
