@@ -1,6 +1,8 @@
 <?php
 namespace FdlDebug\StdLib;
 
+use FdlDebug\Bootstrap;
+
 abstract class Utility
 {
     /**
@@ -59,6 +61,16 @@ abstract class Utility
     {
         $array = array_keys($array);
         return array_pop($array);
+    }
+
+    /**
+     * Return the xdebug trace file
+     * @return string
+     */
+    public static function getXdebugTraceFile()
+    {
+        $config = Bootstrap::getConfigs();
+        return $config['xdebug']['trace_output_dir'] . '/' . $config['xdebug']['trace_output_name'] . '.xt';
     }
 
     /**

@@ -101,13 +101,17 @@ class Debug extends DebugAbstract implements DebugInterface
      */
     public function printTracedVariable($variable)
     {
-        if (!is_string($variable)) {
-            throw new \ErrorException('printTracedVariable() only accepts string.');
-        }
+        if (StdLib\Utility::isXDebugEnabled()) {
+            if (!is_string($variable)) {
+                throw new \ErrorException('printTracedVariable() only accepts string.');
+            }
 
-        if (!empty($variable)) {
-            $output = $this->parseVariableFromXdebug($variable);
-            $this->getWriter()->write($output);
+            if (!empty($variable)) {
+                $output = $this->xdebugParseVariable($variable);
+                $this->getWriter()->write($output);
+            }
+        } else {
+            throw new \ErrorException('Xdebug is disabled');
         }
     }
 }

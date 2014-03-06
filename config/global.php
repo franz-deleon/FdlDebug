@@ -4,8 +4,17 @@
 # or by returning an array of configurations to variable $fdldebug_config_file
 return array(
     'xdebug' => array(
-        'trace_log'  => '/tmp/fdldebug',        # Path for trace log file for XDEBUG
-        'trace_file' => 'fdltrace',             # File name for XDEBUG trace file
+        'trace_output_dir'         => '/tmp/fdldebug',        # Path for trace log file for XDEBUG
+        'trace_output_name'        => 'fdltrace',             # File name for XDEBUG trace file
+        'trace_format'             => 0,
+        'trace_enable_trigger'     => 1,
+        'collect_assignments'      => 1,
+        'var_display_max_data'     => 100,
+        'var_display_max_depth'    => 5,
+        'var_display_max_children' => 100,
+        'collect_params'           => 2,
+        'collect_return'           => 0,
+        'show_mem_delta'           => 0,
     ),
     'writer'     => 'generic_output',           # Default writer. Available writers ('generic_output'). Using FQNS also qualifies
     'conditions' => array(

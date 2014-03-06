@@ -47,28 +47,6 @@ abstract class DebugAbstract
     }
 
     /**
-     * Parse the search string from the xdebug trace log
-     * @param string $search
-     * @return array
-     */
-    public function parseVariableFromXdebug($search)
-    {
-        $search = trim($search, '$ ');
-
-        $traceFile = XDEBUG_TRACE_LOG . '/' . XDEBUG_TRACE_FILE . '.xt';
-        $exec = "grep -i \"\\\$*>{$search}\\b\" "  . $traceFile;
-        exec($exec, $output);
-        $exec = "grep -i \"\\\${$search}\\b\" " . $traceFile;
-        exec($exec, $output);
-
-        $extra['variable'] = $search;
-        $this->formatXdebugTrace($output);
-        $this->formatXdebugTraceVariable($output, $search);
-
-        return $output;
-    }
-
-    /**
      * Slices a backtrace array result
      *
      * @param array  $traceArray              The target trace array
@@ -102,7 +80,7 @@ abstract class DebugAbstract
      * @param boolean $showZF Should we output the ZF library in the trace?
      * @return array
      */
-    protected function formatXdebugTrace(array &$trace, $showVendor = false)
+    protected function xdebugCleanTrace(array &$trace, $showVendor = false)
     {
         $cleanedOutput = array();
         foreach ($trace as $key => $val) {
@@ -127,7 +105,7 @@ abstract class DebugAbstract
      * @param array $contents
      * @param string $var
      */
-    protected function formatXdebugTraceVariable(array &$contents, $var = '')
+    protected function xdebugFormatTrace(array &$contents, $var = '')
     {
         $newContent = array();
         foreach ($contents as $key => $content) {
@@ -143,13 +121,34 @@ abstract class DebugAbstract
                 }
             }
 
-            $initialization = preg_replace(array('~\\\t~', '~\\\n~', '~\\\~'), array(' ', ''), $content['initialization']);
-            $initialization = preg_replace('~\s\s+~', ' ', $initialization);
+            $content['initialization'] = preg_replace(array('~\\\t~', '~\\\n~', '~\\\~'), array(' ', ''), $content['initialization']);
+            $content['initialization'] = preg_replace('~\s\s+~', ' ', $content['initialization']);
 
-            $newContent[$key]["initialization"] = $initialization;
+            $newContent[$key]["initialization"] = $content['initialization'];
         }
 
         $contents = $newContent;
+    }
+
+    /**
+     * Parse the search string from the xdebug trace log
+     * @param string $var
+     * @return array
+     */
+    public function xdebugParseVariable($var)
+    {
+        $var = trim($var, '$ ');
+
+        $traceFile = StdLib\Utility::getXdebugTraceFile();
+        $exec = "grep -i \"\\\$*>{$var}\\b\" "  . $traceFile;
+        exec($exec, $output);
+        $exec = "grep -i \"\\\${$var}\\b\" " . $traceFile;
+        exec($exec, $output);
+
+        $this->xdebugCleanTrace($output);
+        $this->xdebugFormatTrace($output, $var);
+
+        return $output;
     }
 
     /**
