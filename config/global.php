@@ -17,15 +17,18 @@ return array(
         'show_mem_delta'           => 0,
     ),
     'writer'     => 'generic_output',           # Default writer. Available writers ('generic_output'). Using FQNS also qualifies
-    'conditions' => array(
+    'conditions' => array(                      # Registered conditions. Using FQNS also qualifies
         'boolean',
         'loop_range',
         'loop_from',
-    ),                                          # Registered conditions. Using FQNS also qualifies
-    'debug_prefixes'   => array(
+    ),
+    'debug_prefixes'   => array(                # Declaration of debug prefixes for callable methods. Example printDebugTrace()
         'pr',
         'print',
         'loopFromFlush'
-    ),                                          # Declaration of debug prefixes for callable methods. Example printDebugTrace()
-    'debug_extensions' => array('loop_from'),   # Extensions for FdlDebug. Use FQNS to declare new extension
+    ),
+    'debug_extensions' => array(                # Extensions for FdlDebug. Use FQNS to declare new extension
+        'loop_from',
+        'xdebug',
+    ),
 );

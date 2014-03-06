@@ -93,25 +93,4 @@ class Debug extends DebugAbstract implements DebugInterface
         $last['file'] = $file;
         array_unshift($fileTrace, $last);
     }
-
-    /**
-     * Trace the instances of a variable
-     * @param string $variable The name of the variable to trace
-     * @return null
-     */
-    public function printTracedVariable($variable)
-    {
-        if (StdLib\Utility::isXDebugEnabled()) {
-            if (!is_string($variable)) {
-                throw new \ErrorException('printTracedVariable() only accepts string.');
-            }
-
-            if (!empty($variable)) {
-                $output = $this->xdebugParseVariable($variable);
-                $this->getWriter()->write($output);
-            }
-        } else {
-            throw new \ErrorException('Xdebug is disabled');
-        }
-    }
 }
