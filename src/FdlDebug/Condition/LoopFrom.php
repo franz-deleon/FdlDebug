@@ -20,11 +20,19 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     );
 
     /**
+     * Middle identifiers
+     * @var array
+     */
+    protected $middleRegexIdentifiers = array(
+        'median', 'middle', 'center'
+    );
+
+    /**
      * This matches:
      * "1st from start", "2nd from end", "3rd from start", "4th from end", "start", "end"
      * @var string
      */
-    protected $regexExpression = '~^(?:(?P<offset>[0-9]+)(?:st|nd|rd|th)* from )*(?P<position>%s)+$~i';
+    protected $regexExpression = '~^(?:(?P<offset>[0-9]+)(?:st|nd|rd|th)* (?P<condition>from|before|after) )*(?P<position>%s)+$~i';
 
     /**
      * obStart flag is ob is started
@@ -68,14 +76,20 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         if (!empty($content)) {
             preg_match(sprintf(
                 $this->regexExpression,
-                implode('|', array_merge($this->startRegexIdentifiers, $this->endRegexIdentifiers))
+                implode('|', array_merge(
+                    $this->startRegexIdentifiers,
+                    $this->middleRegexIdentifiers,
+                    $this->endRegexIdentifiers
+                ))
             ), $content['expression'], $expressionMatches);
 
             if (!empty($expressionMatches)) {
-                $offset = (int) $expressionMatches['offset'];
+                $offset    = (int) $expressionMatches['offset'];
+                $condition = strtolower($expressionMatches['condition']);
 
-                // check of offset is greater than count.
-                if ($offset > count($content['content'])) {
+                // check if offset is greater than count.
+                $contentCount = count($content['content']);
+                if ($offset > $contentCount) {
                     return;
                 }
 
@@ -83,7 +97,19 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
                 $position = strtolower($expressionMatches['position']);
 
                 $contentOffset = 0;
-                if (in_array($position, $this->endRegexIdentifiers)) {
+                if (in_array($position, $this->middleRegexIdentifiers)) {
+                    $centerCount = (int) ceil($contentCount / 2) - 1;
+                    if ($condition === 'before') {
+                        $contentOffset = $centerCount - $offset;
+                        if ($contentOffset < 0) {
+                            return;
+                        }
+                    } elseif ($condition === 'after') {
+                        $contentOffset = $centerCount + $offset;
+                    } else {
+                        $contentOffset = $centerCount;
+                    }
+                } elseif (in_array($position, $this->endRegexIdentifiers)) {
                     $contentOffset = (int) "-{$offset}"; // passing a negative val automatically searches from the end
                 } else {
                     $contentOffset = $offset - 1;

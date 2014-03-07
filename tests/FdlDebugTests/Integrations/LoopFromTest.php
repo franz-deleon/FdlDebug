@@ -271,4 +271,76 @@ class LoopFromTest extends AbstractIntegrationsTestCase
         }
         $this->Front->loopFromFlush();
     }
+
+    /**
+     * @group test12
+     */
+    public function testUsingLoopFromMiddleWithAfter2nd()
+    {
+        $this->assertOutputString("int(5)");
+        for ($x = 1; $x <= 5; $x++) {
+            $this->Front->loopFrom('2 after middle', 1)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
+
+    /**
+     * @group test13
+     */
+    public function testUsingLoopFromMiddleWithBefore2nd()
+    {
+        $this->assertOutputString("int(1)");
+        for ($x = 1; $x <= 5; $x++) {
+            $this->Front->loopFrom('2 before middle', 1)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
+
+    /**
+     * @group test14
+     */
+    public function testUsingLoopFromMiddleWithBeforeOutofBounds()
+    {
+        $this->expectOutputString("");
+        for ($x = 1; $x <= 5; $x++) {
+            $this->Front->loopFrom('3 before middle', 1)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
+
+    /**
+     * @group test15
+     */
+    public function testUsingLoopFromMiddleWithAfterOutofBounds()
+    {
+        $this->expectOutputString("");
+        for ($x = 1; $x <= 5; $x++) {
+            $this->Front->loopFrom('3 after middle', 1)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
+
+    /**
+     * @group test16
+     */
+    public function testUsingLoopFromMiddleWithBefore1stOnEvenLoopCount()
+    {
+        $this->assertOutputString("int(4)");
+        for ($x = 1; $x <= 10; $x++) {
+            $this->Front->loopFrom('1 before middle', 1)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
+
+    /**
+     * @group test17
+     */
+    public function testUsingLoopFromMiddleWithAfter2ndOnEvenLoopCount()
+    {
+        $this->assertOutputString("int(8)");
+        for ($x = 1; $x <= 10; $x++) {
+            $this->Front->loopFrom('3 after middle', 1)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
 }

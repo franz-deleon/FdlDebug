@@ -48,7 +48,7 @@ include_once 'path/to/fdldebug/Bootstrapper.php';
 ## Conditions:
 Conditions as what I call it is the butter of FdlDebug. It basically adds features on how you call your prints or var_dumps via the Front instance.
 
-#### 1. Boolean Condition
+#### 1. Boolean Condition - condBoolean(bool $booleanExpression)
 The Boolean Condition is a simple way of passing boolean expression to determine if your data should be printed.
 
 For example, only print if the condition evaulates to *true*:
@@ -68,7 +68,7 @@ for ($x = 1; $x <= 5; ++$x) {
 // 4 is even
 ```
 
-#### 2. Loop Range Condition
+#### 2. Loop Range Condition - loopRange(int $offsetStart [, int $length])
 The Loop Range condition is useful when printing a range of data inside a loop.
 
 For example, only print when the iteration of the loop is the 3rd upto the end.
@@ -93,7 +93,7 @@ for ($x = 1; $x <= 5; ++$x) {
 // 3
 ```
 
-#### 3. Loop From Condition
+#### 3. Loop From Condition - loopFrom(string $expression [, int $length])
 The Loop From condition is a pretty dynamic condition designed if you dont know the count of your loop iterations.
 
 For example, you want to print the end iteration of a mysql resource.
@@ -108,7 +108,7 @@ Fdbug::i()->loopFromFlush(); // you need to call loopFromFlush() at the end of t
 // outputs:
 // 123
 ```
-The Loop From condition internally uses output buffering to collect data and calculate the condition. Therefore, you need to call `loopFromFlush()` at the end of the loop in order to print the data.
+When using `loopFrom()`, you need to call `loopFromFlush()` at the end of the loop in order to print the data.
 
 How about if you only want to print the 3rd iteration from the 'end' of the loop?
 ```php
@@ -121,11 +121,31 @@ Fdbug::i()->loopFromFlush();
 // 9
 // 10
 ```
+Lets print the middle of the loop.
+```php
+for ($x = 1; $x <= 5; ++$x) {
+    Fdbug::i()->loopFrom('middle', 1)->pr($x);
+}
+Fdbug::i()->loopFromFlush();
+// outputs:
+// 3
+```
+How about 2 iterations before the median/middle of 5?
+```php
+for ($x = 1; $x <= 5; ++$x) {
+    Fdbug::i()->loopFrom('2 before median', 1)->pr($x);
+}
+Fdbug::i()->loopFromFlush();
+// outputs:
+// 1
+```
 The `loopFrom(string $expression)` accepts expression type statements so these type of statements are valid:  
-"*first*", "*beginning*", "*start*", "*3rd from start*", "*4th from last*", "*5th from end*", "*end*", "*last*", ...  
+"*first*", "*beginning*", "*start*", "*middle*", "median", "2 before middle", "2 after median",  
+"*3rd from start*", "*4th from last*", "*5th from end*", "*end*", "*last*", ...  
+  
 I hope you get the groove :facepunch:
 
-You can also pass a length variable just like `loopRange($expression [, int $length])`
+As you may have noticed, you can also pass a length variable to `loopFrom(strin $expression [, int $length])`
 ```php
 for ($x = 1; $x <= 10; ++$x) {
     Fdbug::i()->loopFrom('4th from last', 2)->pr($x);
@@ -135,7 +155,7 @@ Fdbug::i()->loopFromFlush();
 // 7
 // 8
 ```
-You can also use multiple `loopFrom` conditions (also true for other conditions) while using nested loops.
+You can also use multiple `loopFrom` conditions (also true for other conditions) while in nested loops.
 ```php
 $fdbug = Fdbug::i();
 for ($i = 1; $i <= 5; $i++) {
