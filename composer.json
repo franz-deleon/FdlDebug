@@ -3,10 +3,15 @@
     "type": "library",
     "description": "A super simple but awesomely souped-up PHP debugger helper. Its like var_dump with friends!",
     "keywords": [
-        "Debug",
-        "Debugger",
-        "PHP Debugging",
-        "FDL Debug"
+        "fdldebug",
+        "debug",
+        "debugger",
+        "debugging",
+        "var_dump",
+        "print_r",
+        "print",
+        "echo",
+        "dumper"
     ],
     "homepage": "https://github.com/franz-deleon/FdlDebug",
     "license": "MIT",

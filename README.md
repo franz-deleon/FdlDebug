@@ -122,7 +122,7 @@ Fdbug::i()->loopFromFlush();
 // 10
 ```
 The `loopFrom(string $expression)` accepts expression type statements so these type of statements are valid:  
-"*first*", "*beginning*", "*start*", "*3rd from start*", "*4th from last*", "*5th from end*", "*end*", "*last*", ...
+"*first*", "*beginning*", "*start*", "*3rd from start*", "*4th from last*", "*5th from end*", "*end*", "*last*", ...  
 I hope you get the groove :facepunch:
 
 You can also pass a length variable just like `loopRange($expression [, int $length])`
@@ -137,13 +137,14 @@ Fdbug::i()->loopFromFlush();
 ```
 You can also use multiple `loopFrom` conditions (also true for other conditions) while using nested loops.
 ```php
+$fdbug = Fdbug::i();
 for ($i = 1; $i <= 5; $i++) {
-    $this->Front->loopFrom('3rd from end', 1)->pr("3rd-from-end:" . $i);
+    $fdbug->loopFrom('3rd from end', 1)->pr("3rd-from-end:" . $i);
     for ($x = 1; $x <= 5; $x++) {
-        $this->Front->loopFrom('2nd from start', 1)->pr("2nd-from-start:" . $x);
+        $fdbug->loopFrom('2nd from start', 1)->pr("2nd-from-start:" . $x);
     }
 }
-$this->Front->loopFromFlush(); // now flush everything!
+$fdbug->loopFromFlush(); // now flush everything!
 // outputs:
 // 3rd-from-end:3
 // 2nd-from-start:2
