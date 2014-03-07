@@ -23,6 +23,9 @@
     "autoload": {
         "psr-0": {
             "FdlDebug": "src/"
-        }
+        },
+        "files": [
+           "Bootstrapper.php"
+        ]
     }
 }
