@@ -90,3 +90,63 @@ for ($x = 1; $x <= 5; ++$x) {
 // 2
 // 3
 ```
+
+#### 3. Loop From Condition
+The Loop From condition is a pretty dynamic conditional designed if you dont know the count of iterations of a loop.
+
+For example, if you have no idea the count of a loop but you want to print only the end iteration
+```php
+// asume the end outputs "123"
+while ($row = mysql_fetch_assoc()) {
+   Fdbug::i()->loopFrom('end')->pr($row['col']);
+}
+Fdbug::i()->loopFromFlush(); // you need to call loopFromFlush() at the end of the loop
+// outputs:
+// 123
+```
+The Loop From condition internally uses output buffering to collect data and calculate the condition. Therefore, using `loopFrom()` may be a little slow.
+
+What if you want now to only print the 3rd iteration from the end of the loop?
+```php
+for ($x = 1; $x <= 10; ++$x) { // for simplicity, i am using a for loop
+    Fdbug::i()->loopFrom('3rd from end')->pr($x);
+}
+Fdbug::i()->loopFromFlush();
+// outputs:
+// 8
+// 9
+// 10
+```
+The `loopFrom()` accepts expression type statements so these type of statements are valid:  
+"*start*", "*3rd from start*", "*4th from last*", "*5th from end*", "*end*"
+
+You can also pass a length variable just like `loopRange()`
+```php
+for ($x = 1; $x <= 10; ++$x) {
+    Fdbug::i()->loopFrom('4th from last', 2)->pr($x);
+}
+Fdbug::i()->loopFromFlush();
+// outputs:
+// 7
+// 8
+```
+#### Session Instance Conditional
+In development
+
+#### Chaining Conditionals
+You can chain conditionals if you want.
+```php
+for ($x = 1; $x <= 10; ++$x) {
+    Fdbug::i()
+        ->condBoolean($x % 2 === 0)
+        ->loopRange(3, 4)
+        ->pr($x);
+}
+// outputs:
+// 4
+// 6
+```
+
+### Debug Methods
+
+todo
