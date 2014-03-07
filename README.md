@@ -1,5 +1,6 @@
-FdlDebug - Alpha
+FdlDebug
 ================
+[![Build Status](https://travis-ci.org/franz-deleon/FdlDebug.png?branch=develop)](https://travis-ci.org/franz-deleon/FdlDebug)
 
 FdlDebug is a super simple PHP debugger outputter with a twist. Kinda like var_dump() but more!
 
