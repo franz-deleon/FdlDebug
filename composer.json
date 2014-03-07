@@ -1,10 +1,12 @@
 {
     "name": "franz-deleon/fdl-debug",
     "type": "library",
-    "description": "A simple but awesomely souped-up PHP debugger helper",
+    "description": "A super simple but awesomely souped-up PHP debugger helper. Its like var_dump with friends!",
     "keywords": [
-        "FDL Debug",
-        "PHP Debugging"
+        "Debug",
+        "Debugger",
+        "PHP Debugging",
+        "FDL Debug"
     ],
     "homepage": "https://github.com/franz-deleon/FdlDebug",
     "license": "MIT",
