@@ -151,8 +151,8 @@ $this->Front->loopFromFlush(); // now flush everything!
 #### Session Instance Condition
 In development
 
-#### Chaining Conditionals
-You can chain conditionals if you want.
+#### Chaining Conditions
+You can chain conditions if you want.
 ```php
 use \FdlDebug\Front as Fdbug;
 
