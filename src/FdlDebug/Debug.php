@@ -1,8 +1,6 @@
 <?php
 namespace FdlDebug;
 
-use FdlDebug\Writer\WriterInterface;
-
 class Debug extends DebugAbstract
 {
     /**

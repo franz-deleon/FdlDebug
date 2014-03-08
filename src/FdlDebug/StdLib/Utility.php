@@ -78,7 +78,7 @@ abstract class Utility
      * @param void
      * @return boolean
      */
-    public static function isXDebugEnabled()
+    public static function isXdebugEnabled()
     {
         if (function_exists('xdebug_is_enabled')) {
             if (xdebug_is_enabled() !== true) {
@@ -92,7 +92,7 @@ abstract class Utility
      * Should the xdebug trace start?
      * @return boolean
      */
-    public static function isXDebugTraceStart()
+    public static function canXdebugTraceStart()
     {
         return (
             !empty($_COOKIE['XDEBUG_TRACE'])
@@ -106,7 +106,7 @@ abstract class Utility
      * Is the session already started?
      * @return boolean
      */
-    public function isSessionStarted()
+    public static function isSessionStarted()
     {
         if (php_sapi_name() !== 'cli') {
             if (version_compare(phpversion(), '5.4.0', '>=')) {
@@ -123,7 +123,7 @@ abstract class Utility
      * @param void
      * @return null
      */
-    public function sessionStart()
+    public static function sessionStart()
     {
         if (static::isSessionStarted() === FALSE) {
             session_start();

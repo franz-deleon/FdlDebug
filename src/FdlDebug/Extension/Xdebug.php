@@ -1,7 +1,7 @@
 <?php
 namespace FdlDebug\Extension;
 
-use FdlDebug\StdLib;
+use FdlDebug\StdLib\Utility;
 use FdlDebug\DebugInterface;
 use FdlDebug\Writer\WriterInterface;
 
@@ -29,16 +29,15 @@ class Xdebug implements DebugInterface
      */
     public function printXdebugTracedVar($variable, $showVendor = false)
     {
-        if (StdLib\Utility::isXDebugEnabled()) {
+        if (Utility::isXdebugEnabled()) {
             if (!is_string($variable)) {
                 throw new \ErrorException('printTracedVariable() only accepts string.');
             }
 
-            if (StdLib\Utility::isXDebugTraceStart()) {
+            if (Utility::canXdebugTraceStart()) {
                 if (!empty($variable)) {
                     $this->writer->write($this->xdebugParseVariable($variable, $showVendor));
                 }
-                xdebug_stop_trace();
             } else {
                 $this->writer->write('XDebug tracing has not started. Start it first.');
             }
@@ -57,7 +56,7 @@ class Xdebug implements DebugInterface
     {
         $var = trim($var, '$ ');
 
-        $traceFile = StdLib\Utility::getXdebugTraceFile();
+        $traceFile = Utility::getXdebugTraceFile();
         $exec = "grep -i \"\\\$*>{$var}\\b\" "  . $traceFile;
         exec($exec, $output);
         $exec = "grep -i \"\\\${$var}\\b\" " . $traceFile;
