@@ -60,17 +60,15 @@ class Bootstrap
      */
     public static function initXdebugTrace()
     {
-        if (Utility::canXdebugTraceStart()) {
-            if (Utility::isXDebugEnabled()) {
-                if (!file_exists(self::$configs['xdebug']['trace_output_dir'])) {
-                    mkdir(self::$configs['xdebug']['trace_output_dir'], 0777, true);
-                }
-
-                foreach (self::$configs['xdebug'] as $key => $val) {
-                    ini_set("xdebug.$key", $val);
-                }
-                xdebug_start_trace();
+        if (Utility::canXdebugTraceStart() && Utility::isXdebugEnabled()) {
+            if (!file_exists(self::$configs['xdebug']['trace_output_dir'])) {
+                mkdir(self::$configs['xdebug']['trace_output_dir'], 0777, true);
             }
+
+            foreach (self::$configs['xdebug'] as $key => $val) {
+                ini_set("xdebug.$key", $val);
+            }
+            xdebug_start_trace();
         }
     }
 
