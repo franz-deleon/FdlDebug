@@ -39,7 +39,7 @@ class LoopFrom implements DebugInterface
                 foreach ($slicedStack as $key => $val) {
                     if (true === $val['passed']) {
                         if ($this->writer instanceof GenericOutput) {
-                            $this->writer->useGenericType('print')->write($val['string']);
+                            $this->writer->setTempOutputter('print')->write($val['string']);
                         } else {
                             $this->writer->write($val['string']);
                         }

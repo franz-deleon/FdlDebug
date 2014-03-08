@@ -18,7 +18,7 @@ class Debug extends DebugAbstract
      */
     public function printNow($content)
     {
-        $this->getWriter()->write($content);
+        return $this->getWriter()->write($content);
     }
 
     /**

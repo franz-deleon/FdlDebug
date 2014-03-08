@@ -7,7 +7,7 @@ abstract class AbstractGenericOutput
      * List of available outputters
      * @var string
      */
-    protected $outputters = array('var_dump', 'print_r', 'print', 'echo');
+    protected $outputters = array('var_dump', 'var_export', 'print_r', 'print', 'echo');
 
     /**
      * Default outputter
@@ -19,17 +19,23 @@ abstract class AbstractGenericOutput
      * The temporary generic type to use
      * @var string
      */
-    protected $useGenericType;
+    protected $tempOutputter;
+
+    /**
+     * Return the data or not?
+     * @var string
+     */
+    protected $return = false;
 
     /**
      * Temporarily sets an outputer to be used
      * @param string $outputter
      * @return \FdlDebug\Writer\AbstractGenericWriter
      */
-    public function useGenericType($outputter = null)
+    public function setTempOutputter($outputter = null)
     {
         if (in_array($outputter, $this->outputters)) {
-            $this->useGenericType = $outputter;
+            $this->tempOutputter = $outputter;
         }
         return $this;
     }
@@ -40,9 +46,9 @@ abstract class AbstractGenericOutput
      */
     public function getOutputter()
     {
-        if (null !== $this->useGenericType) {
-            $genericType = $this->useGenericType;
-            $this->useGenericType = null; // reset back on each use
+        if (null !== $this->tempOutputter) {
+            $genericType = $this->tempOutputter;
+            $this->tempOutputter = null; // reset back on each use
 
             return $genericType;
         }
@@ -54,11 +60,34 @@ abstract class AbstractGenericOutput
      * @param string $outputter
      * @return \FdlDebug\Writer\AbstractGenericWriter
      */
-    public function setOutputer($outputter)
+    public function setOutputter($outputter)
     {
         if (in_array($outputter, $this->outputters)) {
             $this->outputter = $outputter;
         }
+        return $this;
+    }
+
+    /**
+     * Are we returning the result or not?
+     * @return bool
+     */
+    public function isReturn()
+    {
+        if (true == $this->return) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Set the return value
+     * @param bool $return
+     * @return \FdlDebug\Writer\AbstractGenericOutput
+     */
+    public function setReturn($return)
+    {
+        $this->return = (bool) $return;
         return $this;
     }
 }
