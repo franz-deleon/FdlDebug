@@ -19,27 +19,28 @@ class Xdebug implements DebugInterface
     public function setWriter(WriterInterface $writer)
     {
         $this->writer = $writer;
+        return $this;
     }
 
     /**
      * Trace the instances of a variable
-     * @param string $variable The name of the variable to trace
+     * @param string  $search The name of the variable to trace/search
      * @param boolean $showVendor
      * @return null
      */
-    public function printXdebugTracedVar($variable, $showVendor = false)
+    public function printXdebugTracedVar($search, $showVendor = false)
     {
         if (Utility::isXdebugEnabled()) {
-            if (!is_string($variable)) {
-                throw new \ErrorException('printTracedVariable() only accepts string.');
+            if (!is_string($search)) {
+                throw new \ErrorException('printXdebugTracedVar() only accepts string.');
             }
 
             if (Utility::canXdebugTraceStart()) {
-                if (!empty($variable)) {
-                    $this->writer->write($this->xdebugParseVariable($variable, $showVendor));
+                if (!empty($search)) {
+                    return $this->writer->write($this->xdebugParseVariable($search, $showVendor));
                 }
             } else {
-                $this->writer->write('XDebug tracing has not started. Start it first.');
+                return $this->writer->write('Xdebug tracing has not started. Start it first.');
             }
         } else {
             throw new \ErrorException('Xdebug is disabled');
@@ -48,22 +49,22 @@ class Xdebug implements DebugInterface
 
     /**
      * Parse the search string from the xdebug trace log
-     * @param string  $var
+     * @param string  $varName
      * @param boolean $showVendor
      * @return array
      */
-    public function xdebugParseVariable($var, $showVendor)
+    public function xdebugParseVariable($varName, $showVendor, $traceFile = null)
     {
-        $var = trim($var, '$ ');
+        $varName = trim($varName, '$ ');
 
-        $traceFile = Utility::getXdebugTraceFile();
-        $exec = "grep -i \"\\\$*>{$var}\\b\" "  . $traceFile;
+        $traceFile = $traceFile ?: Utility::getXdebugTraceFile();
+        $exec = "grep -i \"\\\$*>{$varName}\\b\" "  . $traceFile;
         exec($exec, $output);
-        $exec = "grep -i \"\\\${$var}\\b\" " . $traceFile;
+        $exec = "grep -i \"\\\${$varName}\\b\" " . $traceFile;
         exec($exec, $output);
 
         $this->xdebugCleanTrace($output);
-        $this->xdebugFormatTrace($output, $var);
+        $this->xdebugFormatTrace($output, $varName);
 
         return $output;
     }

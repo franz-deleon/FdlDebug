@@ -22,7 +22,8 @@ class DebugTest extends \PHPUnit_Framework_TestCase
     {
         parent::setUp();
         $writer = new GenericOutput();
-        $writer->setOutputter('var_export')
+        $writer
+            ->setOutputter('var_export')
             ->setReturn(true);
         $this->Debug = new Debug($writer);
     }

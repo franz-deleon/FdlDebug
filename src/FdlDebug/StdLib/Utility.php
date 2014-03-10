@@ -80,12 +80,13 @@ abstract class Utility
      */
     public static function isXdebugEnabled()
     {
+        $config = Bootstrap::getConfigs();
         if (function_exists('xdebug_is_enabled')) {
-            if (xdebug_is_enabled() !== true) {
-                return false;
+            if (xdebug_is_enabled() === true && true == $config['xdebug_tracing_enabled']) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**
