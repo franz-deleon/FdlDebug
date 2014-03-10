@@ -1,7 +1,7 @@
 {
     "name": "franz-deleon/fdl-debug",
     "type": "library",
-    "description": "A super simple but awesomely souped-up PHP debugger helper. Its like var_dump with friends!",
+    "description": "A super simple, no dependency, extendable PHP debugger helper. Its like var_dump with friends!",
     "keywords": [
         "fdldebug",
         "debug",
