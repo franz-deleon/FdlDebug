@@ -193,22 +193,26 @@ for ($x = 1; $x <= 10; ++$x) {
 
   * **pr(mixed $value)** - alias for printNow()
   * **printNow(mixed $value)** - prints something by passing the argument `$value` to the Writer
-  * **printGlobal(string $globalType = null)** - prints data from php's global variables: 'SERVER', 'GET', 'POST', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE' using the Writer
+  * **printGlobal(string $globalType = null)** - prints data from php's global variables
 
   ```php
+    \\ 'SERVER', 'GET', 'POST', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE'
     \FdlDebug\Front::i()->printGlobal('get');
-    // outputs:
-    // array (size=28)
-    //   'APPLICATION_ENV' => string 'local' (length=5)
-    //   'WEB_ENV' => string 'local' (length=5)
-    //   [...]
+    /** outputs
+    outputs:
+      array (size=28)
+        'APPLICATION_ENV' => string 'local' (length=5)
+        'WEB_ENV' => string 'local' (length=5)
+        [...]
+    */
   ```
   * **printBackTrace(void)** - prints a php back trace using the Writer
   * **printFiles(void)** - prints a file trace using the Writer
 
 ### XDebug Methods (extension)
 
-  * **printXdebugTracedVar(string $search, bool $showVendor)** - prints a trace of the target variable $search. This method makes use of XDebug's tracing functionality by looking at `XDEBUG_TRACE=1`
+  * **printXdebugTracedVar(string $search, bool $showVendor)** - prints a trace of the target variable `$search`. This method makes use of XDebug's tracing functionality by looking at `XDEBUG_TRACE=1`  
+
     Example output:
        
        ```php
@@ -230,3 +234,4 @@ for ($x = 1; $x <= 10; ++$x) {
        */
        ```
 
+    *Please remember that you need to enable XDEBUG_TRACE. You can use some XDebug browser extensions to enable it or by passing XDEBUG_TRACE to `http://domain.com/?XDEBUG_TRACE=1`
