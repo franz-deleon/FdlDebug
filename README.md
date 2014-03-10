@@ -191,4 +191,42 @@ for ($x = 1; $x <= 10; ++$x) {
 
 ### Debug Methods
 
-todo
+  * **pr(mixed $value)** - alias for printNow()
+  * **printNow(mixed $value)** - prints something by passing the argument `$value` to the Writer
+  * **printGlobal(string $globalType = null)** - prints data from php's global variables: 'SERVER', 'GET', 'POST', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE' using the Writer
+
+  ```php
+    \FdlDebug\Front::i()->printGlobal('get');
+    // outputs:
+    // array (size=28)
+    //   'APPLICATION_ENV' => string 'local' (length=5)
+    //   'WEB_ENV' => string 'local' (length=5)
+    //   [...]
+  ```
+  * **printBackTrace(void)** - prints a php back trace using the Writer
+  * **printFiles(void)** - prints a file trace using the Writer
+
+### XDebug Methods (extension)
+
+  * **printXdebugTracedVar(string $search, bool $showVendor)** - prints a trace of the target variable $search. This method makes use of XDebug's tracing functionality by looking at `XDEBUG_TRACE=1`
+    Example output:
+       
+       ```php
+       // in Bootstrap.php line 20 of some mvc framework, pretend below is written:
+       $hello = "hello world";
+
+       // Now pretend you are in XController.php of some mvc framework
+       \FdlDebug\Front::i()->printXdebugTracedVar('hello');
+       /** outputs:
+       array (size=1)
+         1 => 
+            array (size=4)
+              'file' => string '/someframework/Bootstrap.php' (length=54)
+              'line' => string '20' (length=2)
+              'var($hello) assignment' => 
+                array (size=1)
+                  0 => string '$hello = 'hello' (length=15)
+              'initialization' => string '$hello = 'hello world'' (length=22)
+       */
+       ```
+
