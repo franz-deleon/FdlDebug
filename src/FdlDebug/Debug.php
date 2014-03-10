@@ -34,17 +34,17 @@ class Debug extends DebugAbstract
             $type = strtoupper($type);
             if (in_array($type, $globalsList)) {
                 if (isset($GLOBALS["_$type"])) {
-                    $this->getWriter()->write($GLOBALS["_$type"]);
+                    return $this->getWriter()->write($GLOBALS["_$type"]);
                 }
             }
         } else {
-            $globals = array();
+            $return = array();
             foreach ($globalsList as $globalType) {
                 if (isset($GLOBALS["_$globalType"])) {
-                    $globals[$globalType] = $GLOBALS["_$globalType"];
+                    $return[$globalType] = $GLOBALS["_$globalType"];
                 }
             }
-            $this->getWriter()->write($globals);
+            return $this->getWriter()->write($return);
         }
     }
 
@@ -59,7 +59,7 @@ class Debug extends DebugAbstract
         $trace = $this->findTraceKeyAndSlice($trace, 'function', __FUNCTION__, 3); // 3 to offset the Front class __call
         $trace[0]['notice'] = "END OF TRACE";
 
-        $this->getWriter()->write(array_reverse($trace));
+        return $this->getWriter()->write(array_reverse($trace));
     }
 
     /**
@@ -75,6 +75,6 @@ class Debug extends DebugAbstract
         $last['notice'] = 'END OF TRACE';
         $fileTrace[] = $last;
 
-        $this->getWriter()->write($fileTrace);
+        return $this->getWriter()->write($fileTrace);
     }
 }

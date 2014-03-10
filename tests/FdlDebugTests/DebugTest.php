@@ -65,35 +65,53 @@ class DebugTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Tests Debug->printGlobal()
+     * @group test3
      */
     public function testPrintGlobal()
     {
-        // TODO Auto-generated DebugTest->testPrintGlobal()
-        $this->markTestIncomplete("printGlobal test not implemented");
+        $globalsList = array('SERVER', 'GET', 'POST', 'FILES', 'REQUEST', 'ENV', 'COOKIE'); //no session
+        $r = $this->Debug->printGlobal(/* parameters */);
+        foreach ($globalsList as $glob) {
+            $this->assertRegExp(sprintf("~\'%s\' => ~", $glob), $r);
+        }
+    }
 
-        $this->Debug->printGlobal(/* parameters */);
+    /**
+     * @group test4
+     */
+    public function testPrintGlobalSpecific()
+    {
+        $r = $this->Debug->printGlobal('server');
+        $this->assertRegExp("~\'SHELL\' => ~", $r);
     }
 
     /**
      * Tests Debug->printBackTrace()
+     * @group test5
      */
     public function testPrintBackTrace()
     {
-        // TODO Auto-generated DebugTest->testPrintBackTrace()
-        $this->markTestIncomplete("printBackTrace test not implemented");
-
-        $this->Debug->printBackTrace(/* parameters */);
+        $r = $this->Debug->printBackTrace(/* parameters */);
+        $this->assertRegExp("~\'END OF TRACE\'~", $r);
     }
 
     /**
      * Tests Debug->printFiles()
+     * @group test6
      */
     public function testPrintFiles()
     {
-        // TODO Auto-generated DebugTest->testPrintFiles()
-        $this->markTestIncomplete("printFiles test not implemented");
+        $r = $this->Debug->printFiles(/* parameters */);
+        $this->assertRegExp("~\'END OF TRACE\'~", $r);
+    }
 
-        $this->Debug->printFiles(/* parameters */);
+    /**
+     * @group test7
+     */
+    public function testPrintFilesWithVendor()
+    {
+        $r = $this->Debug->printFiles(true);
+        $this->assertRegExp("~\'order\' => 1~", $r);
     }
 }
 
