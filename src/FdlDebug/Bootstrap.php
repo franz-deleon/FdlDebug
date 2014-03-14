@@ -24,16 +24,16 @@ class Bootstrap
      */
     public static function init($customConfigFile = null)
     {
-        self::$configs = include __DIR__ . '/../../config/global.php';
+        self::$configs = include_once __DIR__ . '/../../config/global.php';
 
         // give a chance to override the global configs
         if (file_exists(__DIR__ . '/../../config/local.php')) {
-            $localConfig = include __DIR__ . '/../../config/local.php';
+            $localConfig = include_once __DIR__ . '/../../config/local.php';
             self::$configs = Utility::merge(self::$configs, $localConfig);
         }
         if (null !== $customConfigFile) {
             if (is_string($customConfigFile) && file_exists($customConfigFile)) {
-                $customConfig = include $customConfigFile;
+                $customConfig = include_once $customConfigFile;
             } elseif (is_array($customConfigFile)) {
                 $customConfig = $customConfigFile;
             }
@@ -48,8 +48,13 @@ class Bootstrap
             }
         }
 
+        // Include the procedural php functions
+        include_once __DIR__ . '/../../Functions.php';
+
+        // Initialize xdebug
         self::initXdebugTrace();
 
+        // Set the flag
         self::$initialized = true;
     }
 

@@ -45,13 +45,6 @@ class XdebugTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Constructs the test case.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
      * Tests Xdebug->setWriter()
      * @group test1
      */

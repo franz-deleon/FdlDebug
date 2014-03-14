@@ -4,6 +4,7 @@ namespace FdlDebug;
 use FdlDebug\Condition\ConditionsManager;
 use FdlDebug\Condition\AbstractCondition;
 use FdlDebug\StdLib\Utility;
+use Zend\Soap\call_user_func;
 
 /**
  * This is the entry point for the debug using a front
@@ -11,6 +12,24 @@ use FdlDebug\StdLib\Utility;
  */
 class Front
 {
+    /**
+     * The key to search in the backtrace
+     * @var string
+     */
+    const BACKTRACE_KEY = 'function';
+
+    /**
+     * The default backtrace offset
+     * @var int
+     */
+    const BACKTRACE_SLICE_OFFSET = 0;
+
+    /**
+     * The default function to search name
+     * @var string
+     */
+    const BACKTRACE_FUNC_TO_SEARCH = '__call';
+
     /**
      * @var FdlDebug\Front
      */
@@ -37,6 +56,18 @@ class Front
      * @var array Array containing objects
      */
     protected $debugExtensions = array();
+
+    /**
+     * The offset backtrace
+     * @var int
+     */
+    protected $backtraceSliceOffset = self::BACKTRACE_SLICE_OFFSET;
+
+    /**
+     * The function
+     * @var string
+     */
+    protected $backtraceFuncToSearch = self::BACKTRACE_FUNC_TO_SEARCH;
 
     /**
      * Protected constructor for singleton pattern
@@ -70,7 +101,25 @@ class Front
             if ($condition instanceof AbstractCondition) {
                 $condition->setDebugInstance(self::$debugInstance);
                 if ($condition->useDebugTracingForIndex()) {
-                    $trace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
+                    $backTrace = $this->debug->getBackTrace();
+                    $trace = $this->debug->findTraceKeyAndSlice(
+                        $backTrace,
+                        self::BACKTRACE_KEY,
+                        $this->getBacktraceFuncToSearch(),
+                        $this->getBacktraceSliceOffset()
+                    );
+
+                    // bug fix for chaining procedural functions
+                    if (empty($trace[0]['file']) && empty($trace[0]['line'])) {
+                        $trace = $this->debug->findTraceKeyAndSlice(
+                            $backTrace,
+                            self::BACKTRACE_KEY,
+                            self::BACKTRACE_FUNC_TO_SEARCH,
+                            self::BACKTRACE_SLICE_OFFSET,
+                            1 // do not use the first __call
+                        );
+                    }
+
                     $condition
                         ->setFile($trace[0]['file'])
                         ->setLine($trace[0]['line'])
@@ -89,10 +138,12 @@ class Front
             return $this;
         }
 
-        // check if method name is of debug object or an extension
+        // check if method name is of debug object, php function or of an extension
         $debug = null;
         if (is_callable(array($this->debug, $methodName))) {
             $debug = $this->debug;
+        } elseif (is_callable($methodName) && $this->isFunctionName($methodName)) {
+            return call_user_func_array($methodName, $args);
         } else {
             foreach ($this->debugExtensions as $extension) {
                 if (is_callable(array($extension, $methodName))) {
@@ -174,6 +225,46 @@ class Front
     }
 
     /**
+     * The offset slice is used to identify
+     * @param int $offset
+     * @return \FdlDebug\Front
+     */
+    public function setBacktraceSliceOffset($offset)
+    {
+        $this->backtraceSliceOffset = $offset;
+        return $this;
+    }
+
+    /**
+     * Returnthe backtrace slice offset
+     * @return number
+     */
+    public function getBacktraceSliceOffset()
+    {
+        return $this->backtraceSliceOffset;
+    }
+
+    /**
+     * Set the backtrace function to search
+     * @param string $funcName
+     * @return \FdlDebug\Front
+     */
+    public function setBacktraceFuncToSearch($funcName)
+    {
+        $this->backtraceFuncToSearch = $funcName;
+        return $this;
+    }
+
+    /**
+     * Return the backtrace function to search
+     * @return string
+     */
+    public function getBacktraceFuncToSearch()
+    {
+        return $this->backtraceFuncToSearch;
+    }
+
+    /**
      * Register debug extensions
      * @param array $extensions
      */
@@ -248,6 +339,20 @@ class Front
             if (0 === strpos($methodName, $prefix)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * Is this a php function name?
+     * @param  string $functionName
+     * @return boolean
+     */
+    protected function isFunctionName($functionName)
+    {
+        $configs = Bootstrap::getConfigs();
+        if (!empty($configs['function_names']) && in_array($functionName, $configs['function_names'])) {
+            return true;
         }
         return false;
     }
