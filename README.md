@@ -4,20 +4,22 @@ FdlDebug
 
 FdlDebug is a super simple PHP debugger outputter with a twist. Kinda like var_dump() but more!
 
-#### Sneak peak on usage:
+#### Sneak peak on usage
 ```php
-\FdlDebug\Front::i()->pr("Hello Yo!"); // output: "Hello Yo!"
+\FdlDebug\Front::i()->pr("Hello Yo!"); // outputs: "Hello Yo!"
+// procedural style
+pr("Hello Yo"); // output: "Hello Yo!"
 ```
 Yep, thats how simple it is to use! You just grab the `Front::i()` instance and call one of the [Debug Methods](#debug-methods).  
 Don't get fooled though it has more trick on its sleeves! :relieved:
 
 But first, you need to install it.
 
-## Requirements:
+## Requirements
   * PHP 5.3
   * XDebug (optional)
   
-## Installation:
+## Installation
 
 #### Composer
 If your project uses Composer, just add to **composer.json**:
@@ -45,10 +47,10 @@ include_once 'path/to/fdldebug/Bootstrapper.php';
 \FdlDebug\Front::i()->pr('wuzzup'); //outputs: "wuzzup"
 ```
 
-## Conditions:
+## Conditions
 Conditions as what I call it is the butter of FdlDebug. It basically adds features on how you call your prints or var_dumps via the Front instance.
 
-#### 1. Boolean Condition - condBoolean(bool $booleanExpression)
+##### 1. Boolean Condition - `condBoolean(bool $booleanExpression)` | `cond_bool(bool $booleanExpression)`
 The Boolean Condition is a simple way of passing boolean expression to determine if your data should be printed.
 
 For example, only print if the condition evaulates to *true*:
@@ -57,18 +59,22 @@ use \FdlDebug\Front as Fdbug;
 
 $x = rand(1, 10); // assume $x is 5
 Fdbug::i()->condBoolean($x === 5)->pr('Yep its 5'); // outputs: Yep its 5
+// procedural style
+cond_bool($x === 5)->pr('Yep its 5');
 ```
 How about if I only want to print if the loop iteration is of even numbers.
 ```php
 for ($x = 1; $x <= 5; ++$x) {
   Fdbug::i()->condBoolean($x % 2 === 0)->pr("$x is even"); 
+  // procedural style
+  cond_bool($x % 2 === 0)->pr("$x is even"); 
 }
 // outputs: 
 // 2 is even
 // 4 is even
 ```
 
-#### 2. Loop Range Condition - loopRange(int $offsetStart [, int $length])
+##### 2. Loop Range Condition - `loopRange(int $offsetStart [, int $length])` | `cond_range(int $offsetStart [, int $length])`
 The Loop Range condition is useful when printing a range of data inside a loop.
 
 For example, only print when the iteration of the loop is the 3rd upto the end.
@@ -77,6 +83,8 @@ use \FdlDebug\Front as Fdbug;
 
 for ($x = 1; $x <= 5; ++$x) {
   Fdbug::i()->loopRange(3)->pr($x);
+  // procedural style
+  cond_range(3)->pr($x); 
 }
 // outputs:
 // 3
@@ -87,13 +95,15 @@ for ($x = 1; $x <= 5; ++$x) {
 ```php
 for ($x = 1; $x <= 5; ++$x) {
   Fdbug::i()->loopRange(2, 2)->pr($x);
+  // procedural style
+  cond_range(2, 2)->pr($x);
 }
 // outputs:
 // 2
 // 3
 ```
 
-#### 3. Loop From Condition - loopFrom(string $expression [, int $length])
+##### 3. Loop From Condition - `loopFrom(string $expression [, int $length])` | `cond_from(string $expression [, int $length])`
 The Loop From condition is a pretty dynamic condition designed if you dont know the count of your loop iterations.
 
 For example, you want to print the end iteration of a mysql resource.
@@ -103,8 +113,13 @@ use \FdlDebug\Front as Fdbug;
 // asume the end outputs "123"
 while ($row = mysql_fetch_assoc()) {
    Fdbug::i()->loopFrom('end')->pr($row['col']);
+   // procedural style
+   cond_from('end')->pr($row['col']);
 }
 Fdbug::i()->loopFromFlush(); // you need to call loopFromFlush() at the end of the loop
+// procedural style
+cond_from_flush();
+
 // outputs:
 // 123
 ```
@@ -169,7 +184,7 @@ $fdbug->loopFromFlush(); // now flush everything!
 // 3rd-from-end:3
 // 2nd-from-start:2
 ```
-#### Session Instance Condition
+##### Session Instance Condition
 In development
 
 #### Chaining Conditions
@@ -183,6 +198,10 @@ for ($x = 1; $x <= 10; ++$x) {
         ->loopRange(3, 4)
         ->pr($x)
     ;
+    // procedural style
+    cond_bool($x % 2 === 0)
+        ->cond_range(3, 4)
+        ->pr($x);
 }
 // outputs:
 // 4
@@ -191,9 +210,9 @@ for ($x = 1; $x <= 10; ++$x) {
 
 ### Debug Methods
 
-  * **pr(mixed $value)** - alias for printNow()
-  * **printNow(mixed $value)** - prints something by passing the argument `$value` to the Writer
-  * **printGlobal(string $globalType = null)** - prints data from php's global variables
+  * `pr(mixed $value)` - alias for printNow()
+  * `printNow(mixed $value)` | `pr_now(mixed $value)` - prints something by passing the argument `$value` to the Writer
+  * `printGlobal(string $globalType = null)` | `pr_global(string $globalType)` - prints data from php's global variables
 
   ```php
     \\ 'SERVER', 'GET', 'POST', 'FILES', 'REQUEST', 'SESSION', 'ENV', 'COOKIE'
@@ -206,12 +225,12 @@ for ($x = 1; $x <= 10; ++$x) {
         [...]
     */
   ```
-  * **printBackTrace(void)** - prints a php back trace using the Writer
-  * **printFiles(void)** - prints a file trace using the Writer
+  * `printBackTrace($showVendor = false)` | `pr_backtrace($show_vendor = false)` - prints a php back trace using the Writer
+  * `printFiles($showVendor = false)` | `pr_files($show_endor = false)` - prints a file trace using the Writer
 
 ### XDebug Methods (extension)
 
-  * **printXdebugTracedVar(string $search, bool $showVendor)** - prints a trace of the target variable `$search`. This method makes use of XDebug's tracing functionality by looking at `XDEBUG_TRACE=1`  
+  * `printXdebugTracedVar(string $search, bool $showVendor)` | `prx_trace_var(string $search, bool $showVendor)` - prints a trace of the target variable `$search`. This method makes use of XDebug's tracing functionality by looking at `XDEBUG_TRACE=1`  
 
     Example output:
        
@@ -234,4 +253,4 @@ for ($x = 1; $x <= 10; ++$x) {
        */
        ```
 
-    *Please remember that you need to enable XDEBUG_TRACE. You can use some XDebug browser extensions to enable it or by passing XDEBUG_TRACE to `http://domain.com/?XDEBUG_TRACE=1`
+    *Please remember that you need to enable XDEBUG_TRACE. You can use some XDebug browser extensions to enable it or by passing XDEBUG_TRACE to `http://domain.com/?XDEBUG_TRACE=1` (not recommended)
