@@ -1,6 +1,8 @@
 <?php
 namespace FdlDebug\Condition;
 
+use FdlDebug\Writer\GenericOutput;
+
 class LoopFrom extends AbstractCondition implements ConditionsInterface
 {
     /**
@@ -153,7 +155,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function evaluationCallbackMethod()
     {
-        return 'loopFrom';
+        return array('loopFrom');
     }
 
     /**

@@ -20,13 +20,21 @@ interface ConditionsInterface
      *     return 'loopRange';
      * }
      *
+     * // or you can pass an array
+     *
+     * public function evaluationCallbackMethod()
+     * {
+     *     return array('loopRange', 'setRange');
+     * }
+     *
      * public function loopRange([$arg], [$arg2]...)
      * {
      *     // some logic
      * }
      * </code>
      *
-     * @return string The name of the condition method
+     * @return string|array The name of the condition method
+     *                      You can return an array of method name callbacks
      */
     public function evaluationCallbackMethod();
 

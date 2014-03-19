@@ -52,6 +52,11 @@ class Front
     protected $debug;
 
     /**
+     * @var Writer
+     */
+    protected $writer;
+
+    /**
      * Container for debug extensions
      * @var array Array containing objects
      */
@@ -78,8 +83,9 @@ class Front
 
         $configs = Bootstrap::getConfigs();
 
-        $this->debug             = new Debug($this->initWriter($writer ?: $configs['writer']));
-        $this->conditionsManager = new ConditionsManager($configs['conditions']);
+        $this->writer            = $this->initWriter($writer ?: $configs['writer']);
+        $this->debug             = new Debug($this->writer);
+        $this->conditionsManager = new ConditionsManager($configs['conditions'], $this->writer);
         $this->registerExtensions($configs['debug_extensions']);
     }
 
@@ -287,7 +293,7 @@ class Front
 
             $extension = new $extension();
             if ($extension instanceof DebugInterface) {
-                $extension->setWriter($this->debug->getWriter());
+                $extension->setWriter($this->writer);
                 $this->debugExtensions[] = $extension;
             } else {
                 throw new \ErrorException(sprintf(

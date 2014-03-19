@@ -34,14 +34,6 @@ class LoopFromTest extends AbstractIntegrationsTestCase
     }
 
     /**
-     * Constructs the test case.
-     */
-    public function __construct()
-    {
-        // TODO Auto-generated constructor
-    }
-
-    /**
      * @group test1
      */
     public function testLoopFromUsingFromEnd()
@@ -114,7 +106,7 @@ class LoopFromTest extends AbstractIntegrationsTestCase
     }
 
     /**
-     * @group test3a
+     * @group test3
      */
     public function testLoopFromUsingFromStartWithExpression1stFrom()
     {

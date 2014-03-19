@@ -2,6 +2,7 @@
 namespace FdlDebug\Condition;
 
 use FdlDebug\StdLib\Utility;
+use FdlDebug\DebugInterface;
 
 class ConditionsManager
 {
@@ -34,16 +35,23 @@ class ConditionsManager
     /**
      * Constructor.
      * Initialized the conditions
-     * @param array $conditions
+     * @param array  $conditions
+     * @param Writer $writer
      */
-    public function __construct(array $conditions)
+    public function __construct(array $conditions, $writer = null)
     {
         foreach ($conditions as $condition) {
             if (class_exists($condition)) {
-                $this->addConditions(new $condition);
+                $condition = new $condition();
             } elseif (class_exists($condition = __NAMESPACE__ . '\\' . Utility::underscoreToCamelcase($condition))) {
-                $this->addConditions(new $condition);
+                $condition = new $condition();
             }
+
+            if (null !== $writer && $condition instanceof DebugInterface) {
+                $condition->setWriter($writer);
+            }
+
+            $this->addConditions($condition);
         }
     }
 
@@ -54,17 +62,31 @@ class ConditionsManager
      */
     public function addConditions(ConditionsInterface $condition)
     {
-        $methodName = $condition->evaluationCallbackMethod();
-        if (isset($this->conditionsMethodName[$methodName])) {
-            throw new \ErrorException(sprintf(
-                "Method %s already exist in another condition",
-                $methodName
-            ));
+        $methodNames = $condition->evaluationCallbackMethod();
+        $className   = get_class($condition);
+
+        // assign the condition to the classname
+        $this->conditions[$className] = $condition;
+
+        if (!is_array($methodNames)) {
+            $methodNames = array($methodNames);
         }
 
-        $className = get_class($condition);
-        $this->conditions[$className] = $condition;
-        $this->conditionsMethodName[$methodName] = $className;
+        foreach ($methodNames as $methodName) {
+            if (isset($this->conditionsMethodName[$methodName])) {
+                throw new \ErrorException(sprintf(
+                    "Method %s already exist in another condition",
+                    $methodName
+                ));
+            }
+
+            $this->conditionsMethodName[$methodName] = $className;
+        }
+    }
+
+    public function doesClassHasMethod($className, $methodName)
+    {
+        array_keys($this->conditionsMethodName);
     }
 
     /**
