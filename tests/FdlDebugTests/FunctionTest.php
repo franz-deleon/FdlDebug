@@ -149,25 +149,48 @@ class FunctionTest extends Integrations\AbstractIntegrationsTestCase
     /**
      * @group test11
      */
-//     public function testMultipleCondFunctionChainingMultiCallsWithNestedLoops()
-//     {
-//         //$this->assertOutputString("int(5)", "int(4)");
-//         for ($x = 1; $x <= 3; ++$x) {
-//             cond_range(2, 1)
-//                 ->cond_from("center")
-//                 ->cond_bool($x === 2)
-//                 ->pr_now($x);
-//             for ($i = 1; $i <= 5; ++$i) {
-//                 var_dump($i);
-//                 \FdlDebug\Front::i()->condBoolean($i === 3)->pr($i);
-//                 \FdlDebug\Front::i()->loopFrom("center", 1)->pr($i);
-//                 \FdlDebug\Front::i()->loopRange(3, 1)->pr($i);
-//                 cond_from("center", 1)
-//                     ->pr_now($i);
-//             }
-//         }
-//         \FdlDebug\Front::i()->loopFromFlush();
-//         cond_from_flush();
-//     }
-}
+    public function testMultipleCondFunctionChainingMultiCallsWith3NestedLoops()
+    {
+        $this->assertOutputString(
+            'string(5) "1st:1"',
+            'string(5) "3rd:3"',
+            'string(5) "2nd:2"',
+            'string(5) "3rd:3"',
+            'string(5) "3rd:3"',
+            'string(5) "2nd:2"',
+            'string(5) "3rd:3"'
+        );
 
+        for ($i = 1; $i <= 2; $i++) {
+            cond_range(1, 1)->pr("1st:" . $i);
+            for ($x = 1; $x <= 2; $x++) {
+                cond_range(2, 1)->pr("2nd:" . $x);
+                for ($y = 1; $y <= 3; $y++) {
+                    cond_range(3, 1)->pr("3rd:" . $y);
+                }
+                cond_range_nested_end();
+            }
+            cond_range_nested_end();
+        }
+    }
+
+    /**
+     * @group test12
+     */
+    public function testMultipleCondFunctionChainingMultiCallsWith2NestedLoops()
+    {
+        $this->assertOutputString(
+            'string(5) "2nd:3"',
+            'string(5) "1st:2"',
+            'string(5) "2nd:3"'
+        );
+
+        for ($x = 1; $x <= 2; $x++) {
+            cond_range(2, 1)->pr("1st:" . $x);
+            for ($y = 1; $y <= 3; $y++) {
+                cond_range(3, 1)->pr("2nd:" . $y);
+            }
+            cond_range_nested_end();
+        }
+    }
+}

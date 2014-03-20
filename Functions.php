@@ -92,6 +92,19 @@ function cond_range($start, $length = null) {
 }
 
 /**
+ * @param void
+ * @return Ambigous <\FdlDebug\Front, \FdlDebug\FdlDebug\Front>
+ */
+function cond_range_nested_end() {
+    $fdl_debug = Front::i();
+    $fdl_debug->setBacktraceFuncToSearch(__FUNCTION__);
+    $fdl_debug->rangeNestedEnd();
+    $fdl_debug->setBacktraceFuncToSearch(Front::BACKTRACE_FUNC_TO_SEARCH); // reset after use
+
+    return $fdl_debug;
+}
+
+/**
  * @see \FdlDebug\Condition\LoopFrom::loopFrom()
  * @param string  $expression
  * @param int     $length

@@ -103,6 +103,31 @@ for ($x = 1; $x <= 5; ++$x) {
 // 3
 ```
 
+For multiple nested loops, you need to add `rangeNestedEnd()` at the end of each nested loop:
+```php
+for ($x = 1; $x <= 2; $x++) {
+    Fdbug::i()->loopRange(2, 1)->pr("1st:" . $x);
+    // procedural style
+    cond_range(2, 1)->pr("1st:" . $x);
+    
+    for ($y = 1; $y <= 3; $y++) {
+        Fdbug::i()->(3, 1)->pr("2nd:" . $y);
+        // procedural style
+        cond_range(3, 1)->pr("2nd:" . $y);
+    }
+    
+    // the nested end identifier needs to be place here
+    Fdbug::i()->(3, 1)->rangeNestedEnd();
+    // procedural style
+    cond_range_nested_end(); 
+}
+
+// outputs
+// 2nd:3
+// 1st:2
+// 2nd:3
+```
+
 ##### 3. Loop From Condition - `loopFrom(string $expression [, int $length])` | `cond_from(string $expression [, int $length])`
 The Loop From condition is a pretty dynamic condition designed if you dont know the count of your loop iterations.
 

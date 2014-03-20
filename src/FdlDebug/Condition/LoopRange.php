@@ -1,6 +1,8 @@
 <?php
 namespace FdlDebug\Condition;
 
+use FdlDebug\Front;
+
 class LoopRange extends AbstractCondition implements ConditionsInterface
 {
     /**
@@ -8,6 +10,8 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      * @var array
      */
     protected $loopRangeStamp = array();
+
+    protected $nestedLoopCounter = array();
 
     /**
      * Implementation of loop range logic
@@ -26,12 +30,25 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
             ++$this->loopRangeStamp[$index]['iterator'];
         }
 
+        $this->nestedLoopCounter[$index] = $index;
+
         return $this;
     }
 
-    public function rangeNestedLoopEnd()
+    /**
+     * An accessible function to identify an end of a loop
+     * @param void
+     * @return null;
+     */
+    public function rangeNestedEnd()
     {
-
+        $lastIndex = array_pop($this->nestedLoopCounter);
+        if ($this->loopRangeStamp[$lastIndex]['iterator']) {
+            $this->loopRangeStamp[$lastIndex]['iterator'] = 0;
+        }
+        // we need to force destroy the debug front instance
+        // since this method is not of Debug object
+        Front::resetDebugInstance();
     }
 
     /**
@@ -40,7 +57,7 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      */
     public function evaluationCallbackMethod()
     {
-        return array('loopRange', 'rangeNestedLoopEnd');
+        return array('loopRange', 'rangeNestedEnd');
     }
 
     /**

@@ -177,7 +177,7 @@ class Front
 
             // Reset the debug instance if the method name is prefixed
             if ($this->isMethodNamePrefixed($methodName)) {
-                self::$debugInstance = null;
+                static::resetDebugInstance();
             }
 
             if (!empty($return)) {
@@ -309,11 +309,21 @@ class Front
      * @param void
      * @return null
      */
-    protected static function initDebugInstance()
+    public static function initDebugInstance()
     {
         if (null === self::$debugInstance) {
             self::$debugInstance = uniqid();
         }
+    }
+
+    /**
+     * Resets the debug instance
+     * @param void
+     * @return null;
+     */
+    public static function resetDebugInstance()
+    {
+        self::$debugInstance = null;
     }
 
     /**
