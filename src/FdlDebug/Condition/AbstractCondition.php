@@ -129,7 +129,7 @@ abstract class AbstractCondition extends DebugAbstract
             throw new \ErrorException("Cannot assemble unique index");
         }
 
-        return $file . ':' . $method . ':' . $line;
+        return md5($file . ':' . $method . ':' . $line);
     }
 
     /**

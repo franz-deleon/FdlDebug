@@ -119,6 +119,17 @@ function cond_from($expression, $length = null) {
 }
 
 /**
+ * @param void
+ * @return Ambigous <\FdlDebug\Front, \FdlDebug\FdlDebug\Front>
+ */
+function cond_from_nested_end() {
+    $fdl_debug = Front::i();
+    $fdl_debug->loopFromNestedEnd();
+
+    return $fdl_debug;
+}
+
+/**
  * @see \FdlDebug\Extension\LoopFrom::loopFromFlush()
  * @param void
  */

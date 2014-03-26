@@ -90,6 +90,24 @@ class Front
     }
 
     /**
+     * Retrieve the instance of this Front class
+     * @param string $writer     An optional writer to pass to override the default writer.
+     *                           Note that passing a writer breaks the singleton's
+     *                           only one instance pattern and may impact performance as the Front
+     *                           object is initialized on every call!
+     * @return \FdlDebug\Front
+     */
+    public static function i($writer = null)
+    {
+        self::initDebugInstance();
+
+        if (null === self::$instance || null !== $writer) {
+            self::$instance = new self($writer);
+        }
+        return self::$instance;
+    }
+
+    /**
      * This is where the magic happens
      *
      * @param string $methodName
@@ -192,24 +210,6 @@ class Front
             "Method '%s' does not exist. Please make sure it is implemented as a condition or in FdlDebug\\Debug",
             $methodName
         ));
-    }
-
-    /**
-     * Retrieve the instance of this Front class
-     * @param string $writer     An optional writer to pass to override the default writer.
-     *                           Note that passing a writer breaks the singleton's
-     *                           only one instance pattern and may impact performance as the Front
-     *                           object is initialized on every call!
-     * @return \FdlDebug\Front
-     */
-    public static function i($writer = null)
-    {
-        self::initDebugInstance();
-
-        if (null === self::$instance || null !== $writer) {
-            self::$instance = new self($writer);
-        }
-        return self::$instance;
     }
 
     /**

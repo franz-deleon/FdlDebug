@@ -11,6 +11,10 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      */
     protected $loopRangeStamp = array();
 
+    /**
+     * Nested loop range
+     * @var array
+     */
     protected $nestedLoopCounter = array();
 
     /**
@@ -19,7 +23,7 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      * @param integer $length Where to end starting from start
      * @return \FdlDebug\Condition\Range
      */
-    public function loopRange($start, $length = null)
+    public function loopRange($start = 1, $length = null)
     {
         $index = $this->getUniqueIndex();
         if (empty($this->loopRangeStamp[$index])) {

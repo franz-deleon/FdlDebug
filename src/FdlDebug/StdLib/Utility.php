@@ -130,4 +130,26 @@ abstract class Utility
             session_start();
         }
     }
+
+    /**
+     * Replaces the searched key with a new replacement key.
+     * If the replacement key exist in the target array, the replacement will be ignored.
+     *
+     * @param  int|string $search
+     * @param  int|string $replace
+     * @param  array $target
+     * @return array
+     */
+    public static function arrayReplaceKey($search, $replace, array $target)
+    {
+        $return = array();
+        foreach ($target as $key => $val) {
+            if ($search === $key && array_key_exists($replace, $target) === false) {
+                $return[$replace] = $val;
+            } else {
+                $return[$key] = $val;
+            }
+        }
+        return $return;
+    }
 }

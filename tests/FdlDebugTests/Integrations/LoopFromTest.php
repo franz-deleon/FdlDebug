@@ -335,4 +335,22 @@ class LoopFromTest extends AbstractIntegrationsTestCase
         }
         $this->Front->loopFromFlush();
     }
+
+    /**
+     * @group test18
+     * @group x
+     */
+    public function testUsingLoopFromWithNestedEndLoop()
+    {
+        $this->assertOutputString("int(2)", "int(7)");
+        $f = 0;
+        for ($x = 1; $x <= 2; $x++) {
+            for ($i = 1; $i <= 5; $i++) {
+                ++$f;
+                $this->Front->loopFrom('1 before center', 1)->pr($f);
+            }
+            $this->Front->loopFromNestedEnd();
+        }
+        $this->Front->loopFromFlush();
+    }
 }

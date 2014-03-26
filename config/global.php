@@ -37,7 +37,7 @@ return array(
     'debug_prefixes'   => array(
         'pr',
         'print',
-        'loopFromFlush'
+        'loopFromFlush',
     ),
 
     # Extensions for FdlDebug. Use FQNS (Fully qualified namespace) to add new custom extensions

@@ -2,6 +2,8 @@
 namespace FdlDebug\Condition;
 
 use FdlDebug\Writer\GenericOutput;
+use FdlDebug\Front;
+use FdlDebug\StdLib;
 
 class LoopFrom extends AbstractCondition implements ConditionsInterface
 {
@@ -40,13 +42,15 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      * obStart flag is ob is started
      * @var boolean
      */
-    protected $obStart = false;
+    protected static $obStart = false;
 
     /**
      * Content storage container
      * @var array
      */
     protected $contentStorage = array();
+
+    protected $nestedContentCounter = array();
 
     /**
      * Callback method
@@ -59,8 +63,10 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         $this->contentStorage[$index]['expression'] = $fromString;
         $this->contentStorage[$index]['length'] = $length;
 
-        if (false === $this->obStart) {
-            $this->obStart = true;
+        $this->nestedContentCounter[$index] = $index;
+
+        if (false === self::$obStart) {
+            self::$obStart = true;
             ob_flush(); // flush the output buffer first
             ob_start();
         }
@@ -122,6 +128,16 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         }
     }
 
+    public function loopFromNestedEnd()
+    {
+        $lastIndex = array_pop($this->nestedContentCounter);
+        $newIndex  = $lastIndex . '-' . uniqid();
+
+        $this->contentStorage = StdLib\Utility::arrayReplaceKey($lastIndex, $newIndex, $this->contentStorage);
+
+        Front::resetDebugInstance();
+    }
+
     /**
      * Retrieve the content storage
      * @return array
@@ -137,15 +153,16 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function postDebug($return = null, $pass = false)
     {
-        $index = $this->getUniqueIndex();
+        $index    = $this->getUniqueIndex();
         $instance = $this->getDebugInstance();
+
         $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
         $this->contentStorage[$index]['content'][$instance]['passed'] = $pass;
 
         // turn off output buffering
-        if (true === $this->obStart) {
-            $this->obStart = false;
-            ob_clean();
+        if (true === self::$obStart) {
+            self::$obStart = false;
+            ob_end_clean();
         }
     }
 
@@ -155,7 +172,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function evaluationCallbackMethod()
     {
-        return array('loopFrom');
+        return array('loopFrom', 'loopFromNestedEnd');
     }
 
     /**
