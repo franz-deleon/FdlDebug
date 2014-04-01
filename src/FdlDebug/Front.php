@@ -293,7 +293,7 @@ class Front
 
             $extension = new $extension();
             if ($extension instanceof DebugInterface) {
-                $extension->setWriter($this->writer);
+                $extension->setWriter($this->getWriter());
                 $this->debugExtensions[] = $extension;
             } else {
                 throw new \ErrorException(sprintf(
@@ -324,6 +324,15 @@ class Front
     public static function resetDebugInstance()
     {
         self::$debugInstance = null;
+    }
+
+    /**
+     * Retrieve the writer
+     * @return \FdlDebug\Writer
+     */
+    public function getWriter()
+    {
+        return $this->writer;
     }
 
     /**
