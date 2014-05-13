@@ -22,6 +22,19 @@ class Debug extends DebugAbstract
     }
 
     /**
+     * Print and die
+     * @param mixed $content
+     */
+    public function prDie($content)
+    {
+        $r = $this->printNow($content);
+        if ($r !== null) {
+            echo $r;
+        }
+        die;
+    }
+
+    /**
      * Print PHP's global variables
      * @param string $type
      * @param int $offsetTrace

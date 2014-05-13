@@ -18,6 +18,14 @@ function pr($value) {
 }
 
 /**
+ * @see \FdlDebug\Debug::prDie();
+ * @param mixed $value
+ */
+function prd($value) {
+    return Front::i()->prDie($value);
+}
+
+/**
  * @see \FdlDebug\Debug::pr();
  * @param mixed $value
  */
