@@ -34,6 +34,14 @@ function pr_now($value) {
 }
 
 /**
+ * @see \FdlDebug\Debug::prObject();
+ * @param object $value
+ */
+function pr_object($object) {
+    return Front::i()->prObject($object);
+}
+
+/**
  * @see \FdlDebug\Debug::printGlobal();
  * @param string $type
  */

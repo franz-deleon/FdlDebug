@@ -35,6 +35,23 @@ class Debug extends DebugAbstract
     }
 
     /**
+     * Defines an object
+     */
+    public function prObject($object)
+    {
+        if (is_object($object)) {
+            $return = array();
+            $return['name'] = $className = get_class($object);
+            $return['hash_id']    = spl_object_hash($object);
+            $return['methods']    = get_class_methods($className);
+            $return['properties'] = get_class_vars($className);
+            $this->pr($return);
+        } else {
+            $this->pr('Is not an object');
+        }
+    }
+
+    /**
      * Print PHP's global variables
      * @param string $type
      * @param int $offsetTrace
