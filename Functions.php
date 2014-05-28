@@ -5,7 +5,6 @@
 
 use FdlDebug\Front;
 use FdlDebug\Bootstrap;
-use FdlDebug\StdLib\Utility;
 
 ######### Print functions ##########
 
@@ -21,7 +20,7 @@ function pr($value) {
  * @see \FdlDebug\Debug::prDie();
  * @param mixed $value
  */
-function prd($value) {
+function prd($value = '') {
     return Front::i()->prDie($value);
 }
 
@@ -154,6 +153,25 @@ function cond_from_flush() {
     $fdl_debug->loopFromFlush();
 
     return $fdl_debug;
+}
+
+############# Misc functions #############
+
+/**
+ * Retrieves the instance of fdl debug
+ * @return Front
+ */
+function fd_i($writer = null) {
+    return Front::i($writer);
+}
+
+/**
+ * Retrieves the writer instance
+ * @return \FdlDebug\Writer
+ */
+function fd_writer()
+{
+    return Front::i()->getWriter();
 }
 
 ################## DO NOT EDIT BELLOW HERE #################
