@@ -111,8 +111,19 @@ class DebugTest extends \PHPUnit_Framework_TestCase
      */
     public function testPrintFilesWithVendor()
     {
+        include_once 'Assets/vendor/test.php';
         $r = $this->Debug->printFiles(true);
-        $this->assertRegExp("~\'order\' => 1~", $r);
+        $this->assertRegExp("~\'order\' => [0-9]+~", $r);
+    }
+
+    /**
+     * @group test8
+     */
+    public function testPrintObject()
+    {
+        $obj = new \stdClass();
+        $r = $this->Debug->printObject($obj);
+        $this->assertRegExp("~\'name\' => \'stdClass\'~", $r);
     }
 }
 
