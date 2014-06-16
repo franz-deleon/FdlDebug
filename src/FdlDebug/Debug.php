@@ -37,7 +37,7 @@ class Debug extends DebugAbstract
     /**
      * Defines an object
      */
-    public function prObject($object)
+    public function printObject($object)
     {
         if (is_object($object)) {
             $return = array();
@@ -45,9 +45,9 @@ class Debug extends DebugAbstract
             $return['hash_id']    = spl_object_hash($object);
             $return['methods']    = get_class_methods($className);
             $return['properties'] = get_class_vars($className);
-            $this->pr($return);
+            return $this->pr($return);
         } else {
-            $this->pr('Is not an object');
+            return $this->pr('Is not an object');
         }
     }
 

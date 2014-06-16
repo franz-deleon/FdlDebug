@@ -37,7 +37,7 @@ function pr_now($value) {
  * @param object $value
  */
 function pr_object($object) {
-    return Front::i()->prObject($object);
+    return Front::i()->printObject($object);
 }
 
 /**
