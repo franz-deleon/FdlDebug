@@ -6,8 +6,4 @@
 .project
 .settings
 composer.lock
-dummy.php
-vendor/bin
-vendor/ZF2
-vendor
 *reports
