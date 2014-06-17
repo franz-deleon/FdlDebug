@@ -50,6 +50,10 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     protected $contentStorage = array();
 
+    /**
+     * Nested loop counter
+     * @var array
+     */
     protected $nestedContentCounter = array();
 
     /**

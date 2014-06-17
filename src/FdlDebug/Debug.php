@@ -18,7 +18,11 @@ class Debug extends DebugAbstract
      */
     public function printNow($content)
     {
-        return $this->getWriter()->write($content);
+        if (is_object($content)) {
+            return $this->printObject($content);
+        } else {
+            return $this->getWriter()->write($content);
+        }
     }
 
     /**
