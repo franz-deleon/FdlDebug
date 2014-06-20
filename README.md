@@ -59,14 +59,14 @@ use \FdlDebug\Front as Fdbug;
 
 $x = rand(1, 10); // assume $x is 5
 Fdbug::i()->condBoolean($x === 5)->pr('Yep its 5'); // outputs: Yep its 5
-// procedural style
+// function hybrid style
 cond_bool($x === 5)->pr('Yep its 5');
 ```
 How about if I only want to print if the loop iteration is of even numbers.
 ```php
 for ($x = 1; $x <= 5; ++$x) {
   Fdbug::i()->condBoolean($x % 2 === 0)->pr("$x is even"); 
-  // procedural style
+  // function hybrid style
   cond_bool($x % 2 === 0)->pr("$x is even"); 
 }
 // outputs: 
@@ -83,7 +83,7 @@ use \FdlDebug\Front as Fdbug;
 
 for ($x = 1; $x <= 5; ++$x) {
   Fdbug::i()->loopRange(3)->pr($x);
-  // procedural style
+  // function hybrid style
   cond_range(3)->pr($x); 
 }
 // outputs:
@@ -95,7 +95,7 @@ for ($x = 1; $x <= 5; ++$x) {
 ```php
 for ($x = 1; $x <= 5; ++$x) {
   Fdbug::i()->loopRange(2, 2)->pr($x);
-  // procedural style
+  // function hybrid style
   cond_range(2, 2)->pr($x);
 }
 // outputs:
@@ -107,18 +107,18 @@ For multiple nested loops, you need to add `rangeNestedEnd()` at the end of each
 ```php
 for ($x = 1; $x <= 2; $x++) {
     Fdbug::i()->loopRange(2, 1)->pr("1st:" . $x);
-    // procedural style
+    // function hybrid style
     cond_range(2, 1)->pr("1st:" . $x);
     
     for ($y = 1; $y <= 3; $y++) {
         Fdbug::i()->(3, 1)->pr("2nd:" . $y);
-        // procedural style
+        // function hybrid style
         cond_range(3, 1)->pr("2nd:" . $y);
     }
     
     // the nested end identifier needs to be place here
     Fdbug::i()->(3, 1)->rangeNestedEnd();
-    // procedural style
+    // function hybrid style
     cond_range_nested_end(); 
 }
 
@@ -138,11 +138,11 @@ use \FdlDebug\Front as Fdbug;
 // asume the end outputs "123"
 while ($row = mysql_fetch_assoc()) {
    Fdbug::i()->loopFrom('end')->pr($row['col']);
-   // procedural style
+   // function hybrid style
    cond_from('end')->pr($row['col']);
 }
 Fdbug::i()->loopFromFlush(); // you need to call loopFromFlush() at the end of the loop
-// procedural style
+// function hybrid style
 cond_from_flush();
 
 // outputs:
@@ -182,8 +182,6 @@ Fdbug::i()->loopFromFlush();
 The `loopFrom(string $expression)` accepts expression type statements so these type of statements are valid:  
 "*first*", "*beginning*", "*start*", "*middle*", "median", "2 before middle", "2 after median",  
 "*3rd from start*", "*4th from last*", "*5th from end*", "*end*", "*last*", ...  
-  
-I hope you get the groove :facepunch:
 
 As you may have noticed, you can also pass a length variable to `loopFrom(strin $expression [, int $length])`
 ```php
@@ -235,8 +233,14 @@ for ($x = 1; $x <= 10; ++$x) {
 
 ### Debug Methods
 
+  * `fd_i()` - function to retrieve the fdldebug instance
+  * `fd_writer()` - function to retrieve the writer object instance
   * `pr(mixed $value)` - alias for printNow()
+  * `prd(mixed $value)` - same as pr() but dies automatically
+  * `printObject(object $value)` | `pr_object` - outputs information on an object
   * `printNow(mixed $value)` | `pr_now(mixed $value)` - prints something by passing the argument `$value` to the Writer
+  * `printBackTrace($showVendor = false)` | `pr_backtrace($show_vendor = false)` - prints a php back trace using the Writer
+  * `printFiles($showVendor = false)` | `pr_files($show_endor = false)` - prints a file trace using the Writer
   * `printGlobal(string $globalType = null)` | `pr_global(string $globalType)` - prints data from php's global variables
 
   ```php
@@ -250,8 +254,6 @@ for ($x = 1; $x <= 10; ++$x) {
         [...]
     */
   ```
-  * `printBackTrace($showVendor = false)` | `pr_backtrace($show_vendor = false)` - prints a php back trace using the Writer
-  * `printFiles($showVendor = false)` | `pr_files($show_endor = false)` - prints a file trace using the Writer
 
 ### XDebug Methods (extension)
 
