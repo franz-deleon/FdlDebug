@@ -93,7 +93,7 @@ class DebugTest extends \PHPUnit_Framework_TestCase
     public function testPrintBackTrace()
     {
         $r = $this->Debug->printBackTrace(/* parameters */);
-        $this->assertRegExp("~\'END OF TRACE\'~", $r);
+        $this->assertRegExp("~\'END OF BACKTRACE\'~", $r);
     }
 
     /**
@@ -103,7 +103,7 @@ class DebugTest extends \PHPUnit_Framework_TestCase
     public function testPrintFiles()
     {
         $r = $this->Debug->printFiles(/* parameters */);
-        $this->assertRegExp("~\'END OF TRACE\'~", $r);
+        $this->assertRegExp("~\'END\'~", $r);
     }
 
     /**

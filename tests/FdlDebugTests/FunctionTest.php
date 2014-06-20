@@ -48,7 +48,7 @@ class FunctionTest extends Integrations\AbstractIntegrationsTestCase
     public function testPrBacktrace()
     {
         pr_backtrace();
-        $this->expectOutputRegex("~END OF TRACE~");
+        $this->expectOutputRegex("~END OF BACKTRACE~");
     }
 
     /**
@@ -57,7 +57,7 @@ class FunctionTest extends Integrations\AbstractIntegrationsTestCase
     public function testPrFiles()
     {
         pr_files();
-        $this->expectOutputRegex("~END OF TRACE~");
+        $this->expectOutputRegex("~END~");
     }
 
     /**

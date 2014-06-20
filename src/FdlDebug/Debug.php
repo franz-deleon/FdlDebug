@@ -21,7 +21,7 @@ class Debug extends DebugAbstract
         if (is_object($content)) {
             return $this->printObject($content);
         } else {
-            return $this->getWriter()->write($content);
+            return $this->getWriter()->write($content, array('function' => __FUNCTION__));
         }
     }
 
@@ -49,7 +49,7 @@ class Debug extends DebugAbstract
             $return['hash_id']    = spl_object_hash($object);
             $return['methods']    = get_class_methods($className);
             $return['properties'] = get_class_vars($className);
-            return $this->pr($return);
+            return $this->getWriter()->write($return, array('function' => __FUNCTION__));
         } else {
             return $this->pr('Is not an object');
         }
@@ -68,7 +68,7 @@ class Debug extends DebugAbstract
             $type = strtoupper($type);
             if (in_array($type, $globalsList)) {
                 if (isset($GLOBALS["_$type"])) {
-                    return $this->getWriter()->write($GLOBALS["_$type"]);
+                    return $this->getWriter()->write($GLOBALS["_$type"], array('function' => __FUNCTION__, 'type' => $type));
                 }
             }
         } else {
@@ -78,7 +78,7 @@ class Debug extends DebugAbstract
                     $return[$globalType] = $GLOBALS["_$globalType"];
                 }
             }
-            return $this->getWriter()->write($return);
+            return $this->getWriter()->write($return, array('function' => __FUNCTION__));
         }
     }
 
@@ -91,9 +91,9 @@ class Debug extends DebugAbstract
     {
         $trace = $this->getBackTrace();
         $trace = $this->findTraceKeyAndSlice($trace, 'function', __FUNCTION__, 3); // 3 to offset the Front class __call
-        $trace[0]['notice'] = "END OF TRACE";
+        $trace[0]['notice'] = "END OF BACKTRACE";
 
-        return $this->getWriter()->write(array_reverse($trace));
+        return $this->getWriter()->write(array_reverse($trace), array('function' => __FUNCTION__));
     }
 
     /**
@@ -106,9 +106,12 @@ class Debug extends DebugAbstract
         $fileTrace = $this->getFileTrace($showVendor);
         array_shift($fileTrace);
 
-        $last['notice'] = 'END OF TRACE';
-        $fileTrace[] = $last;
+        $last = array_pop($fileTrace);
+        $lastOrder = (int) $last['order'];
 
-        return $this->getWriter()->write($fileTrace);
+        $fileTrace[] = $last; //readd the popped element
+        $fileTrace[] = array('order' => ++$lastOrder, 'file' => 'END');
+
+        return $this->getWriter()->write($fileTrace, array('function' => __FUNCTION__));
     }
 }
