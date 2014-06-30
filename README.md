@@ -16,8 +16,8 @@ for ($i = 0; $i <= 10000; $i++) {
     // you want to print when the iteration is at 5000
     cond_bool($i == 5000)->pr("Yes! its at {$i}");
     
-    // you want to print iterations 5 to 10
-    cond_range(5, 5)->pr($i); // prints: 5, 6, 7, 8, 9, 10
+    // you want to print iterations 5006 to 5010
+    cond_range(5006, 5)->pr($i); // prints: 5006, 5007, 5008, 5009, 5010
     
 }
 ```
