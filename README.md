@@ -9,6 +9,17 @@ FdlDebug is a super simple PHP debugger outputter with a twist. Kinda like var_d
 \FdlDebug\Front::i()->pr("Hello Yo!"); // outputs: "Hello Yo!"
 // procedural style
 pr("Hello Yo"); // output: "Hello Yo!"
+
+// Another example. Imagine you are in a large loop and...
+for ($i = 0; $i <= 10000; $i++) {
+
+    // you want to print when the iteration is at 5000
+    cond_bool($i == 5000)->pr("Yes! its at {$i}");
+    
+    // you want to print iterations 5 to 10
+    cond_range(5, 5)->pr($i); // prints: 5, 6, 7, 8, 9, 10
+    
+}
 ```
 Yep, thats how simple it is to use! You just grab the `Front::i()` instance and call one of the [Debug Methods](#debug-methods).  
 Don't get fooled though it has more trick on its sleeves! :relieved:
