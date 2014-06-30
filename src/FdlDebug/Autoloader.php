@@ -15,7 +15,6 @@ class Autoloader
 
     public static function register($dir = null)
     {
-        ini_set('unserialize_callback_func', 'spl_autoload_call');
         spl_autoload_register(array(new self($dir), 'autoload'));
     }
 
