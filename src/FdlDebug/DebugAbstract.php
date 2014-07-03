@@ -89,7 +89,7 @@ abstract class DebugAbstract implements DebugInterface
     /**
      * Slices a backtrace array result
      *
-     * @param array  $traceArray              The target trace array
+     * @param array  $traceArray              The target trace array from getBackTrace()
      * @param string $traceKey                The target backtrace key
      * @param string $traceValueToSearch      The target backtrace's key value
      * @param int    $fromSearchedValueOffset The offset that starts from a successfully searched $traceValueToSearch
@@ -111,13 +111,14 @@ abstract class DebugAbstract implements DebugInterface
         if ($fromStartOffset > 0) {
             $traceArray = array_slice($traceArray, $fromStartOffset);
         }
+
         foreach ($traceArray as $key => $val) {
             if ($val[$traceKey] === $traceValueToSearch) {
                 if ($startFromEnd == true) {
-                    $traceArray = array_slice($traceArray, 0, ($key + $fromSearchedValueOffset));
+                    $traceArray = array_slice($traceArray, 0, ($key + 1) + -abs($fromSearchedValueOffset));
                     break;
                 } else {
-                    return array_slice($traceArray, ($key + $fromSearchedValueOffset));
+                    return array_slice($traceArray, ($key + abs($fromSearchedValueOffset)));
                 }
             }
         }

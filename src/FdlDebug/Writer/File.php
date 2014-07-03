@@ -50,8 +50,16 @@ class File implements WriterInterface
             @mkdir(dirname($this->fileLogDir));
         }
 
-        $this->fileHandle = fopen($this->fileLogFileName, 'a+');
+        $this->fileHandle = fopen($this->fileLogFileName, 'a+');var_dump($this->fileHandle);
         @chmod($this->fileLogFileName, 0777);
+    }
+
+    /**
+     * Close the file handle
+     */
+    function __destruct()
+    {
+        fclose($this->fileHandle);
     }
 
     /**
@@ -64,7 +72,7 @@ class File implements WriterInterface
         $host  = gethostname();
         $debug = Front::i()->getDebug();
         $trace = $debug->getBackTrace();
-        $trace = $debug->findTraceKeyAndSlice($trace, 'function', '__call', 0, 0, true);
+        $trace = $debug->findTraceKeyAndSlice($trace, 'function', '__call', 1, 0, true);
 
         // skip the first element if its of Function.php
         if (isset($trace[0]['file']) && strpos($trace[0]['file'], 'Functions.php') !== false) {
@@ -83,7 +91,6 @@ class File implements WriterInterface
 
                 if ($this->handle !== false) {
                     fwrite($this->fileHandle, $string);
-                    fclose($this->fileHandle);
                 } else {
                     $posix = posix_getpwuid(posix_getuid());
                     throw new \ErrorException("Cannot create log file: '{$this->fileLogFileName}' for user: {$posix['name']}");
