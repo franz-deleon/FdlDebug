@@ -12,17 +12,6 @@ use Zend\Soap\call_user_func;
  */
 class Front
 {
-    /**
-     * The key to search in the backtrace
-     * @var string
-     */
-    const BACKTRACE_KEY = 'function';
-
-    /**
-     * The default backtrace offset
-     * @var int
-     */
-    const BACKTRACE_SLICE_OFFSET = 0;
 
     /**
      * The default function to search name
@@ -63,12 +52,6 @@ class Front
     protected $debugExtensions = array();
 
     /**
-     * The offset backtrace
-     * @var int
-     */
-    protected $backtraceSliceOffset = self::BACKTRACE_SLICE_OFFSET;
-
-    /**
      * The function
      * @var string
      */
@@ -76,6 +59,7 @@ class Front
 
     /**
      * Protected constructor for singleton pattern
+     * @param string $writer
      */
     protected function __construct($writer = null)
     {
@@ -126,26 +110,14 @@ class Front
                 $condition->setDebugInstance(self::$debugInstance);
                 if ($condition->useDebugTracingForIndex()) {
                     $backTrace = $this->debug->getBackTrace();
-                    $trace = $this->debug->findTraceKeyAndSlice(
-                        $backTrace,
-                        self::BACKTRACE_KEY,
-                        $this->getBacktraceFuncToSearch(),
-                        $this->getBacktraceSliceOffset()
-                    );
+                    $trace = $this->debug->findTraceKeyAndSlice($backTrace, 'function', $this->getBacktraceFuncToSearch(), 0);
 
-                    // bug fix for chaining procedural functions
+                    // bug fix for chaining procedural functions. @see Functions.php
                     if (empty($trace[0]['file']) && empty($trace[0]['line'])) {
-                        $trace = $this->debug->findTraceKeyAndSlice(
-                            $backTrace,
-                            self::BACKTRACE_KEY,
-                            self::BACKTRACE_FUNC_TO_SEARCH,
-                            self::BACKTRACE_SLICE_OFFSET,
-                            1 // do not use the first __call
-                        );
+                        $trace = $this->debug->findTraceKeyAndSlice($backTrace, 'function', self::BACKTRACE_FUNC_TO_SEARCH, 0, 1);
                     }
 
-                    $condition
-                        ->setFile($trace[0]['file'])
+                    $condition->setFile($trace[0]['file'])
                         ->setLine($trace[0]['line'])
                         ->setMethod($methodName);
                 }
@@ -228,26 +200,6 @@ class Front
     public function getDebug()
     {
        return $this->debug;
-    }
-
-    /**
-     * The offset slice is used to identify
-     * @param int $offset
-     * @return \FdlDebug\Front
-     */
-    public function setBacktraceSliceOffset($offset)
-    {
-        $this->backtraceSliceOffset = $offset;
-        return $this;
-    }
-
-    /**
-     * Returnthe backtrace slice offset
-     * @return number
-     */
-    public function getBacktraceSliceOffset()
-    {
-        return $this->backtraceSliceOffset;
     }
 
     /**
