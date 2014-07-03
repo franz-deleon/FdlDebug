@@ -92,8 +92,9 @@ abstract class DebugAbstract implements DebugInterface
      * @param array  $traceArray              The target trace array
      * @param string $traceKey                The target backtrace key
      * @param string $traceValueToSearch      The target backtrace's key value
-     * @param number $fromSearchedValueOffset The offset that starts from a successfully searched $traceValueToSearch
-     * @param number $fromStartOffset         The offset that starts from the beginning of $traceArray
+     * @param int    $fromSearchedValueOffset The offset that starts from a successfully searched $traceValueToSearch
+     * @param int    $fromStartOffset         The offset that starts from the beginning of $traceArray
+     * @param bool   $startFromEnd            Should the array search start from the end?
      * @return array
      */
     public function findTraceKeyAndSlice(
@@ -101,16 +102,30 @@ abstract class DebugAbstract implements DebugInterface
         $traceKey,
         $traceValueToSearch,
         $fromSearchedValueOffset = 0,
-        $fromStartOffset = 0
+        $fromStartOffset = 0,
+        $startFromEnd = false
     ) {
+        if ($startFromEnd == true) {
+            $traceArray = array_reverse($traceArray);
+        }
         if ($fromStartOffset > 0) {
             $traceArray = array_slice($traceArray, $fromStartOffset);
         }
         foreach ($traceArray as $key => $val) {
             if ($val[$traceKey] === $traceValueToSearch) {
-                return array_slice($traceArray, ($key + $fromSearchedValueOffset));
+                if ($startFromEnd == true) {
+                    $traceArray = array_slice($traceArray, 0, ($key + $fromSearchedValueOffset));
+                    break;
+                } else {
+                    return array_slice($traceArray, ($key + $fromSearchedValueOffset));
+                }
             }
         }
+
+        if ($startFromEnd == true) {
+            return array_reverse($traceArray);
+        }
+
         return $traceArray;
     }
 
