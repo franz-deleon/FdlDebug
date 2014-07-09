@@ -21,6 +21,9 @@ class Debug extends DebugAbstract
         if (is_object($content)) {
             return $this->printObject($content);
         } else {
+            if (is_bool($content)) {
+                $content = 'boolean: ' . (($content === true) ? 'true' : 'false');
+            }
             return $this->getWriter()->write($content, array('function' => __FUNCTION__));
         }
     }

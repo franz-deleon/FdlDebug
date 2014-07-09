@@ -50,7 +50,7 @@ class File implements WriterInterface
             @mkdir(dirname($this->fileLogDir));
         }
 
-        $this->fileHandle = fopen($this->fileLogFileName, 'a+');var_dump($this->fileHandle);
+        $this->fileHandle = fopen($this->fileLogFileName, 'a+');
         @chmod($this->fileLogFileName, 0777);
     }
 
