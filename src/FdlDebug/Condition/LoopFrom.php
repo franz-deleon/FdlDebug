@@ -69,7 +69,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function loopFrom($fromString, $length = null)
     {
-        $index = $this->getUniqueIndex();
+        $index = $this->getUniquePosition();
         $this->contentStorage[$index]['expression'] = $fromString;
         $this->contentStorage[$index]['length'] = $length;
 
@@ -163,7 +163,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function postDebug($return = null, $pass = false)
     {
-        $index    = $this->getUniqueIndex();
+        $index    = $this->getUniquePosition();
         $instance = $this->getDebugInstance();
 
         $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();

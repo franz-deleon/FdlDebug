@@ -108,10 +108,11 @@ abstract class AbstractCondition extends DebugAbstract
     }
 
     /**
-     * Returns unique index string base of concatenated file, method caller and line values
+     * Returns the debug method's uniqe position.
+     * The position is based on debug trace's concatenated file, method caller and line values
      * @return string
      */
-    public function getUniqueIndex()
+    public function getUniquePosition()
     {
         if (false === $this->useDebugTracingForIndex()) {
             throw new \BadMethodCallException(sprintf(

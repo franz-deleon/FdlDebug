@@ -25,7 +25,7 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      */
     public function loopRange($start = 1, $length = null)
     {
-        $index = $this->getUniqueIndex();
+        $index = $this->getUniquePosition();
         if (empty($this->loopRangeStamp[$index])) {
             $this->loopRangeStamp[$index]['iterator'] = 1;
             $this->loopRangeStamp[$index]['start']    = $start;
@@ -70,7 +70,7 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      */
     public function evaluate()
     {
-        $index = $this->getUniqueIndex();
+        $index = $this->getUniquePosition();
         if (!empty($this->loopRangeStamp[$index])) {
             $iterator = $this->loopRangeStamp[$index]['iterator'];
             $start    = $this->loopRangeStamp[$index]['start'];
