@@ -108,7 +108,7 @@ class Front
         if (null !== $condition) {
             if ($condition instanceof AbstractCondition) {
                 $condition->setDebugInstance(self::$debugInstance);
-                if ($condition->useDebugTracingForIndex()) {
+                if ($condition->enableDebugTracing()) {
                     $backTrace = $this->debug->getBackTrace();
                     $trace = $this->debug->findTraceKeyAndSlice($backTrace, 'function', $this->getBacktraceFuncToSearch(), 0);
 

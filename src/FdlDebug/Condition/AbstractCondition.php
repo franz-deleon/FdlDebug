@@ -114,9 +114,9 @@ abstract class AbstractCondition extends DebugAbstract
      */
     public function getUniquePosition()
     {
-        if (false === $this->useDebugTracingForIndex()) {
+        if (false === $this->enableDebugTracing()) {
             throw new \BadMethodCallException(sprintf(
-                "%s::useDebugTracingForIndex() needs to enabled for %s",
+                "%s::enableDebugTracing() needs to enabled for %s",
                 __CLASS__,
                 __FUNCTION__
             ));
@@ -135,14 +135,14 @@ abstract class AbstractCondition extends DebugAbstract
 
     /**
      * Switch to enable a debug tracing call.
-     * Enabling this will have setLine() and setFile() initialized.
+     * Enabling this will have setLine(), setFile() and setMethod() initialized.
      *
      * We have this switch as false for performance improvement
      * to avoid debug_backtrace being called everytime.
      *
      * @return boolean Defaults to false for performance
      */
-    public function useDebugTracingForIndex()
+    public function enableDebugTracing()
     {
         return false;
     }

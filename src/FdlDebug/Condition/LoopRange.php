@@ -92,9 +92,9 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
 
     /**
      * (non-PHPdoc)
-     * @see \FdlDebug\Condition\AbstractCondition::useDebugTracingForIndex()
+     * @see \FdlDebug\Condition\AbstractCondition::enableDebugTracing()
      */
-    public function useDebugTracingForIndex()
+    public function enableDebugTracing()
     {
         return true;
     }
