@@ -264,7 +264,7 @@ class Front
     public static function initDebugInstance()
     {
         if (null === self::$debugInstance) {
-            self::$debugInstance = uniqid();
+            self::$debugInstance = 'dbuginstance-' . uniqid();
         }
     }
 

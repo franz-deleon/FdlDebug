@@ -135,21 +135,20 @@ abstract class Utility
      * Replaces the searched key with a new replacement key.
      * If the replacement key exist in the target array, the replacement will be ignored.
      *
-     * @param  int|string $search
-     * @param  int|string $replace
-     * @param  array $target
-     * @return array
+     * @param  int|string $search  The key to search for
+     * @param  int|string $replace The replacement for the searched key
+     * @param  array $target       Target associative array
      */
-    public static function arrayReplaceKey($search, $replace, array $target)
+    public static function arrayReplaceKey($search, $replace, array &$target)
     {
-        $return = array();
+        $tempArray = array();
         foreach ($target as $key => $val) {
             if ($search === $key && array_key_exists($replace, $target) === false) {
-                $return[$replace] = $val;
+                $tempArray[$replace] = $val;
             } else {
-                $return[$key] = $val;
+                $tempArray[$key] = $val;
             }
         }
-        return $return;
+        $target = $tempArray;
     }
 }

@@ -12,7 +12,9 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      * @var array
      */
     protected $startRegexIdentifiers = array(
-        'first', 'start', 'beginning',
+        'first',
+        'start',
+        'beginning',
     );
 
     /**
@@ -20,7 +22,9 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      * @var array
      */
     protected $endRegexIdentifiers = array(
-        'last', 'end', 'ending',
+        'last',
+        'end',
+        'ending',
     );
 
     /**
@@ -28,7 +32,9 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      * @var array
      */
     protected $middleRegexIdentifiers = array(
-        'median', 'middle', 'center'
+        'median',
+        'middle',
+        'center',
     );
 
     /**
@@ -134,10 +140,10 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
     public function loopFromNestedEnd()
     {
-        $lastIndex = array_pop($this->nestedContentCounter);
-        $newIndex  = $lastIndex . '-' . uniqid();
+        $oldIndex = array_pop($this->nestedContentCounter);
+        $newIndex = $oldIndex . '-' . uniqid();
 
-        $this->contentStorage = StdLib\Utility::arrayReplaceKey($lastIndex, $newIndex, $this->contentStorage);
+        StdLib\Utility::arrayReplaceKey($oldIndex, $newIndex, $this->contentStorage);
 
         Front::resetDebugInstance();
     }

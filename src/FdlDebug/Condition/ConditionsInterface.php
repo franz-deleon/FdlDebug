@@ -45,7 +45,7 @@ interface ConditionsInterface
     public function evaluate();
 
     /**
-     * A hook for any post debug process/logic
+     * A hook that is run 'after' a debug method call is invoked
      * @param $return The return value is passed automatically
      * @param $passed If the evaluation passed or not
      * @return null

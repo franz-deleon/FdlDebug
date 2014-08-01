@@ -108,7 +108,7 @@ abstract class AbstractCondition extends DebugAbstract
     }
 
     /**
-     * Returns unique index string base of concatenated file and line values
+     * Returns unique index string base of concatenated file, method caller and line values
      * @return string
      */
     public function getUniqueIndex()
@@ -129,7 +129,7 @@ abstract class AbstractCondition extends DebugAbstract
             throw new \ErrorException("Cannot assemble unique index");
         }
 
-        return md5($file . ':' . $method . ':' . $line);
+        return 'posindex-' . md5($file . ':' . $method . ':' . $line);
     }
 
     /**
