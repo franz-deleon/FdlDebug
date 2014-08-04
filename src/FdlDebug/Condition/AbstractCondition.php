@@ -141,6 +141,7 @@ abstract class AbstractCondition extends DebugAbstract
      * to avoid debug_backtrace being called everytime.
      *
      * @return boolean Defaults to false for performance
+     * @overload
      */
     public function enableDebugTracing()
     {
