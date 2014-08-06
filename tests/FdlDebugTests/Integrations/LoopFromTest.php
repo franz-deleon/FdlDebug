@@ -364,4 +364,18 @@ class LoopFromTest extends AbstractIntegrationsTestCase
         }
         $this->Front->loopFromFlush();
     }
+
+
+    /**
+     * @group test19
+     */
+    public function testLoopFromWillWorkWithOtherNonChainingConditionals()
+    {
+        $this->assertOutputString('int(3)', 'int(3)');
+        for ($x = 1; $x <= 5; $x++) {
+            $this->Front->loopFrom('middle', 1)->pr($x);
+            $this->Front->condBoolean($x == 3)->pr($x);
+        }
+        $this->Front->loopFromFlush();
+    }
 }

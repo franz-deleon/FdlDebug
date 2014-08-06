@@ -174,6 +174,8 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
         $this->contentStorage[$index]['content'][$instance]['passed'] = $passed;
 
+        Front::i()->getWriter()->setRunWrite(true);
+
         // turn off output buffering
         if (true === self::$obStart) {
             self::$obStart = false;
@@ -197,7 +199,6 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     public function shutdown($writer = null)
     {
         do {
-            $writer->setRunWrite(true);
             $slicedStack = $this->sliceContentStack();
             if (!empty($slicedStack)) {
                 foreach ($slicedStack as $key => $val) {
