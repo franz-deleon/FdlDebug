@@ -1,7 +1,7 @@
 <?php
 namespace FdlDebug\Writer;
 
-abstract class AbstractGenericOutput
+abstract class AbstractGenericOutput extends AbstractWriter
 {
     /**
      * List of available outputters

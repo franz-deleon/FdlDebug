@@ -1,6 +1,7 @@
 <?php
 namespace FdlDebug\Condition;
 
+use FdlDebug\Writer\WriterInterface as Writer;
 use FdlDebug\Writer\GenericOutput;
 use FdlDebug\Front;
 use FdlDebug\StdLib;
@@ -91,7 +92,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     public function sliceContentStack()
     {
         $content = array_shift($this->contentStorage);
-        if (!empty($content)) {
+        if (!empty($content) && !empty($content['expression'])) {
             preg_match(sprintf(
                 $this->regexExpression,
                 implode('|', array_merge(
@@ -145,7 +146,71 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
         StdLib\Utility::arrayReplaceKey($oldIndex, $newIndex, $this->contentStorage);
 
+//         var_dump($this->contentStorage);
+//         echo "\n\n\n";
+
         Front::resetDebugInstance();
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::preDebug()
+     */
+    public function preDebug(Writer $writer)
+    {
+        // force the writer to not write
+        $writer->setRunWrite(false);
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
+     */
+    public function postDebug($return = null, $passed = false)
+    {
+        $index    = $this->getUniquePosition();
+        $instance = $this->getDebugInstance();
+
+        $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
+        $this->contentStorage[$index]['content'][$instance]['passed'] = $passed;
+
+        // turn off output buffering
+        if (true === self::$obStart) {
+            self::$obStart = false;
+            ob_end_clean();
+        }
+    }
+
+    /**
+     * Only use for testing
+     * @deprecated
+     */
+    public function loopFromFlush()
+    {
+        $this->shutdown(Front::i()->getWriter());
+    }
+
+    /**
+     * @overload
+     * @see \FdlDebug\Condition\AbstractCondition::shutdown()
+     */
+    public function shutdown($writer = null)
+    {
+        do {
+            $writer->setRunWrite(true);
+            $slicedStack = $this->sliceContentStack();
+            if (!empty($slicedStack)) {
+                foreach ($slicedStack as $key => $val) {
+                    if (true === $val['passed']) {
+                        if ($writer instanceof GenericOutput) {
+                            $writer->setTempOutputter('print')->write($val['string']);
+                        } else {
+                            $writer->write($val['string']);
+                        }
+                    }
+                }
+            }
+        } while (null !== $slicedStack);
     }
 
     /**
@@ -159,30 +224,11 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
     /**
      * (non-PHPdoc)
-     * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
-     */
-    public function postDebug($return = null, $pass = false)
-    {
-        $index    = $this->getUniquePosition();
-        $instance = $this->getDebugInstance();
-
-        $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
-        $this->contentStorage[$index]['content'][$instance]['passed'] = $pass;
-
-        // turn off output buffering
-        if (true === self::$obStart) {
-            self::$obStart = false;
-            ob_end_clean();
-        }
-    }
-
-    /**
-     * (non-PHPdoc)
      * @see \FdlDebug\Condition\ConditionsInterface::evaluationCallbackMethod()
      */
     public function evaluationCallbackMethod()
     {
-        return array('loopFrom', 'loopFromNestedEnd');
+        return array('loopFrom', 'loopFromNestedEnd', 'loopFromFlush');
     }
 
     /**

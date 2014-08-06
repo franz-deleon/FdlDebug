@@ -7,6 +7,10 @@ abstract class DebugAbstract implements DebugInterface
 {
     protected $writer;
 
+    protected $file;
+
+    protected $line;
+
     /**
      * Constructor.
      * Pass the writer
@@ -37,6 +41,44 @@ abstract class DebugAbstract implements DebugInterface
     {
         $this->writer = $writer;
         return $this;
+    }
+
+    /**
+     * Set the file where debug method is run
+     * @param string $file
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+        return $this;
+    }
+
+    /**
+     * Retrieve the file where method is run
+     * @return string
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Set the line number where method is run
+     * @param string $line
+     */
+    public function setLine($line)
+    {
+        $this->line = $line;
+        return $this;
+    }
+
+    /**
+     * Return the line where method is run
+     * @return string
+     */
+    public function getLine()
+    {
+        return $this->line;
     }
 
     /**

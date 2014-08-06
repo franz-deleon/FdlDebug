@@ -4,7 +4,7 @@ namespace FdlDebug\Writer;
 use FdlDebug\Front;
 use FdlDebug\Bootstrap;
 
-class File implements WriterInterface
+class File extends AbstractWriter implements WriterInterface
 {
     /**
      * Default file log path
@@ -68,16 +68,15 @@ class File implements WriterInterface
      */
     public function write($content, $extra = null)
     {
+        if ($this->getRunWrite() == false) {
+            return $content;
+        }
+
         $time  = date('y-m-d h:i:s');
         $host  = gethostname();
         $debug = Front::i()->getDebug();
-        $trace = $debug->getBackTrace();
-        $trace = $debug->findTraceKeyAndSlice($trace, 'function', '__call', 1, 0, true);
-
-        // skip the first element if its of Function.php
-        if (isset($trace[0]['file']) && strpos($trace[0]['file'], 'Functions.php') !== false) {
-            array_shift($trace);
-        }
+        $file  = $debug->getFile();
+        $line  = $debug->getLine();
 
         switch ($extra['function']) {
             case 'printObject':
@@ -85,11 +84,11 @@ class File implements WriterInterface
             case 'printBackTrace':
             case 'printFiles':
             default:
-                $string  = PHP_EOL . "******START ({$host}:{$trace[0]['file']}:{$trace[0]['line']} at {$time})********" . PHP_EOL;
+                $string  = PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
                 $string .= print_r($content, true);
-                $string .= PHP_EOL . "******END ({$host}:{$trace[0]['file']}:{$trace[0]['line']} at {$time})**********" . PHP_EOL;
+                $string .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})**********" . PHP_EOL;
 
-                if ($this->handle !== false) {
+                if ($this->fileHandle !== false) {
                     fwrite($this->fileHandle, $string);
                 } else {
                     $posix = posix_getpwuid(posix_getuid());

@@ -1,6 +1,8 @@
 <?php
 namespace FdlDebug\Condition;
 
+use FdlDebug\Writer\WriterInterface as Writer;
+
 class Boolean extends AbstractCondition implements ConditionsInterface
 {
     /**
@@ -46,5 +48,13 @@ class Boolean extends AbstractCondition implements ConditionsInterface
     public function postDebug()
     {
         return;
+    }
+
+    /**
+     * Do nothing
+     * @see \FdlDebug\Condition\ConditionsInterface::preDebug()
+     */
+    public function preDebug(Writer $writer)
+    {
     }
 }

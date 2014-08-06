@@ -2,10 +2,10 @@
 namespace FdlDebug\Extension;
 
 use FdlDebug\StdLib\Utility;
-use FdlDebug\DebugInterface;
+use FdlDebug\DebugAbstract;
 use FdlDebug\Writer\WriterInterface;
 
-class Xdebug implements DebugInterface
+class Xdebug extends DebugAbstract
 {
     /**
      * @var WriterInterface

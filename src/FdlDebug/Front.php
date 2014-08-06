@@ -74,6 +74,23 @@ class Front
     }
 
     /**
+     * destructor
+     * Run the shutdown method on each called condition
+     *
+     * @param void
+     * @return null
+     */
+    public function __destruct()
+    {
+        $x = $this->conditionsManager->getImmutableCalledConditions();
+        foreach ($x as $condition) {
+            if (method_exists($condition, 'shutdown')) {
+                $condition->shutdown($this->writer);
+            }
+        }
+    }
+
+    /**
      * Retrieve the instance of this Front class
      * @param string $writer     An optional writer to pass to override the default writer.
      *                           Note that passing a writer breaks the singleton's
@@ -151,7 +168,19 @@ class Front
 
         // a debug object has been found
         if (isset($debug)) {
+            // pass the signature to debug
+            $debugBackTrace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
+            $debug->setFile($debugBackTrace[0]['file'])
+                ->setLine($debugBackTrace[0]['line']);
+
+            $calledConditions = $this->conditionsManager->getCalledConditions();
             $pass = $this->conditionsManager->evaluateExpressions(self::$debugInstance);
+
+            // pre processing on called conditions
+            foreach ($calledConditions as $condition) {
+                // the writer is pass to give the condition a chance to modify it
+                $condition->preDebug($this->writer);
+            }
 
             $return = null;
             if (true === $pass) {
@@ -159,11 +188,11 @@ class Front
             }
 
             // post processing on called conditions
-            foreach ($this->conditionsManager->getCalledConditions() as $condition) {
+            foreach ($calledConditions as $condition) {
                 $condition->postDebug($return, $pass);
             }
             // reset the called conditions
-            $this->conditionsManager->setCalledConditions(array());
+            $this->conditionsManager->resetCalledConditions();
 
             // Reset the debug instance if the method name is prefixed
             if ($this->isMethodNamePrefixed($methodName)) {

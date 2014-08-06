@@ -34,7 +34,18 @@ class LoopFromTest extends AbstractIntegrationsTestCase
     }
 
     /**
+     * This needs to be run first before everything
+     * so the entire test would complete without failures.
+     * todo: investigate
+     */
+    public function testEmpty1()
+    {
+        $this->Front->loopFromFlush();
+    }
+
+    /**
      * @group test1
+     * @runTestInSeparateProcess
      */
     public function testLoopFromUsingFromEnd()
     {
@@ -47,6 +58,7 @@ class LoopFromTest extends AbstractIntegrationsTestCase
 
     /**
      * @group test2
+     * @runTestInSeparateProcess
      */
     public function testLoopFromUsingFromEndWithExpression1stFrom()
     {

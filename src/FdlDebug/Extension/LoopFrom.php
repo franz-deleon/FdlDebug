@@ -6,6 +6,11 @@ use FdlDebug\DebugInterface;
 use FdlDebug\Writer\WriterInterface;
 use FdlDebug\Writer\GenericOutput;
 
+/**
+ * Deprecated
+ * @author fdeleon
+ *
+ */
 class LoopFrom implements DebugInterface
 {
     protected $writer;

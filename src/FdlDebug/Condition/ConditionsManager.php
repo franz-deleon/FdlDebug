@@ -19,6 +19,12 @@ class ConditionsManager
     protected $calledConditions = array();
 
     /**
+     * Called conditions that are cannot be changed
+     * @var array Array of Condition\ConditionsInterface
+     */
+    protected $immutableCalledConditions = array();
+
+    /**
      * A mapper array with key as the method
      * name and val as condition class name
      * @var array
@@ -82,11 +88,6 @@ class ConditionsManager
 
             $this->conditionsMethodName[$methodName] = $className;
         }
-    }
-
-    public function doesClassHasMethod($className, $methodName)
-    {
-        array_keys($this->conditionsMethodName);
     }
 
     /**
@@ -177,19 +178,44 @@ class ConditionsManager
         }
     }
 
+    /**
+     * Retrieve the called conditions
+     * @return array
+     */
     public function getCalledConditions()
     {
         return $this->calledConditions;
     }
 
+    /**
+     * Immutable set of called conditions
+     * @param ConditionsInterface $condition
+     */
     public function addCalledConditions(ConditionsInterface $condition)
     {
-        $this->calledConditions[] = $condition;
+        $objHash = spl_object_hash($condition);
+        $this->calledConditions[$objHash] = $condition;
+
+        // store every condition to the immutable array
+        $this->immutableCalledConditions[$objHash] = $condition;
     }
 
-    public function setCalledConditions(array $conditions)
+    /**
+     * Reset the called conditions
+     * @param array $conditions
+     */
+    public function resetCalledConditions()
     {
-        $this->calledConditions = $conditions;
+        $this->calledConditions = array();
+    }
+
+    /**
+     * Retreive the immutable called conditions
+     * @return array
+     */
+    public function getImmutableCalledConditions()
+    {
+        return $this->immutableCalledConditions;
     }
 
     /**

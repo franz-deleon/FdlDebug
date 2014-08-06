@@ -8,6 +8,7 @@ use FdlDebug\Bootstrap;
  */
 class FunctionTest extends Integrations\AbstractIntegrationsTestCase
 {
+
     /**
      * Prepares the environment before running a test.
      */
@@ -128,6 +129,7 @@ class FunctionTest extends Integrations\AbstractIntegrationsTestCase
 
     /**
      * @group test10
+     * @group t1
      */
     public function testMultipleCondFunctionChainingMultiCalls()
     {
@@ -142,6 +144,29 @@ class FunctionTest extends Integrations\AbstractIntegrationsTestCase
                 ->cond_from("1 before center", 1)
                 ->cond_bool($x === 4)
                 ->pr_now($x);
+        }
+        cond_from_flush();
+    }
+
+    /**
+     * @group t1
+     * @group test13
+     */
+    public function testMultipleNestedCondFrom()
+    {
+        $this->assertOutputString(
+            'string(4) "a1:2"',
+            'string(7) "a:1 b:2"',
+            'string(7) "a:2 b:2"',
+            'string(7) "a:3 b:2"'
+        );
+
+        for ($a = 1; $a <= 3; $a++) {
+            cond_from("middle", 1)->pr('a1:' . $a);
+            for ($b = 1; $b <= 3; $b++) {
+                cond_from("middle", 1)->pr('a:' . $a . ' b:' . $b);
+            }
+            cond_from_nested_end();
         }
         cond_from_flush();
     }
@@ -193,4 +218,5 @@ class FunctionTest extends Integrations\AbstractIntegrationsTestCase
             cond_range_nested_end();
         }
     }
+
 }

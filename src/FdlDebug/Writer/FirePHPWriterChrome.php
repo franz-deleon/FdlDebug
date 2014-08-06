@@ -5,10 +5,15 @@ require_once realpath(__DIR__ . '/../../../lib/FirePHP/FirePHP.class.php');
 
 use \FirePHP;
 
-class FirePHPWriterChrome implements WriterInterface
+class FirePHPWriterChrome extends AbstractWriter implements WriterInterface
 {
     public function write($content, $extra = null)
     {
+        // return the raw content
+        if ($this->getRunWrite() == false) {
+            return $content;
+        }
+
         $firephp = FirePHP::getInstance(true);
 
         switch ($extra['function']) {

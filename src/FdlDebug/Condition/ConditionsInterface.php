@@ -1,6 +1,8 @@
 <?php
 namespace FdlDebug\Condition;
 
+use FdlDebug\Writer\WriterInterface as Writer;
+
 interface ConditionsInterface
 {
     /**
@@ -43,6 +45,13 @@ interface ConditionsInterface
      * @return boolean
      */
     public function evaluate();
+
+    /**
+     * A hook that is run 'before' a debug method call is invoked
+     * @param $writer The writer object
+     * @return boolean
+     */
+    public function preDebug(Writer $writer);
 
     /**
      * A hook that is run 'after' a debug method call is invoked
