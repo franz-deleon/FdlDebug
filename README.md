@@ -2,7 +2,7 @@ FdlDebug
 ================
 [![Build Status](https://travis-ci.org/franz-deleon/FdlDebug.png?branch=develop)](https://travis-ci.org/franz-deleon/FdlDebug)
 
-FdlDebug is a super simple PHP debugger outputter with a twist. Kinda like var_dump() but more!
+FdlDebug is a super simple PHP debugger outputter with a twist. It's like var_dump() but more!
 
 #### Sneak peak on usage
 ```php
@@ -19,12 +19,13 @@ for ($i = 0; $i <= 10000; $i++) {
     // you want to print iterations 5006 to 5010
     cond_range(5006, 5)->pr($i); // prints: 5006, 5007, 5008, 5009, 5010
     
+    // you want to print the end of the loop
+    cond_from('end')->pr($i); // prints: 10000    
 }
 ```
 Yep, thats how simple it is to use! You just grab the `Front::i()` instance and call one of the [Debug Methods](#debug-methods).  
-Don't get fooled though it has more trick on its sleeves! :relieved:
 
-But first, you need to install it.
+How to install it.
 
 ## Requirements
   * PHP 5.3
