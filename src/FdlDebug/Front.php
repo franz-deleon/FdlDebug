@@ -169,9 +169,11 @@ class Front
         // a debug object has been found
         if (isset($debug)) {
             // pass the signature to debug
-            $debugBackTrace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call');
-            $debug->setFile($debugBackTrace[0]['file'])
-                ->setLine($debugBackTrace[0]['line']);
+            $debugBackTrace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call', 1, 0, true);
+            if (isset($debugBackTrace[0]['file']) && strpos($debugBackTrace[0]['file'], 'Functions.php') !== false) {
+                array_shift($debugBackTrace);
+            }
+            $debug->setFile($debugBackTrace[0]['file'])->setLine($debugBackTrace[0]['line']);
 
             $calledConditions = $this->conditionsManager->getCalledConditions();
             $pass = $this->conditionsManager->evaluateExpressions(self::$debugInstance);
