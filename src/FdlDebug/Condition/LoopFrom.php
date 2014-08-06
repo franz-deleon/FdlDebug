@@ -78,7 +78,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
         if (false === self::$obStart) {
             self::$obStart = true;
-            ob_flush(); // flush the output buffer first
+            //ob_flush(); // flush the output buffer first
             ob_start();
         }
     }
