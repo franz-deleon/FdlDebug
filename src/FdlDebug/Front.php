@@ -264,10 +264,6 @@ class Front
      */
     public function registerExtensions(array $extensions)
     {
-        if (empty($extensions)) {
-            return;
-        }
-
         foreach ($extensions as $extension) {
             // check for package extensions first
             $existingExtension = __NAMESPACE__ . "\\Extension\\" . Utility::underscoreToCamelcase($extension);
