@@ -39,6 +39,12 @@ class ConditionsManager
     protected $conditionsExpression = array();
 
     /**
+     * Method names that will not be evaulated or treated as a condition
+     * @var array
+     */
+    protected $unevaluatedCallbackMethods = array();
+
+    /**
      * Constructor.
      * Initialized the conditions
      * @param array  $conditions
@@ -53,23 +59,39 @@ class ConditionsManager
                 $condition = new $condition();
             }
 
-            if (null !== $writer && $condition instanceof DebugInterface) {
-                $condition->setWriter($writer);
-            }
-
-            $this->addConditions($condition);
+            $this->registerCondition($condition, $writer);
         }
     }
 
     /**
-     * Add a new condition checker to the stack
+     * Register a new condition
      * @param ConditionsInterface $condition
      * @throws \ErrorException
      */
-    public function addConditions(ConditionsInterface $condition)
+    public function registerCondition(ConditionsInterface $condition, $writer = null)
     {
+        if (null !== $writer && $condition instanceof DebugInterface) {
+            $condition->setWriter($writer);
+        }
+
         $methodNames = $condition->evaluationCallbackMethod();
         $className   = get_class($condition);
+
+        if ($condition instanceof AbstractCondition) {
+            // inject the conditions manager
+            $condition->setConditionsManager($this);
+
+            // register the unevaluated callback methods if there are any
+            $unevaluatedMethodnames = $condition->unevaluatedCallbackMethods();
+            if (!empty($unevaluatedMethodnames)) {
+                if (!is_array($unevaluatedMethodnames)) {
+                    $unevaluatedMethodnames = array($unevaluatedMethodnames);
+                }
+
+                $methodNames = array_merge($methodNames, $unevaluatedMethodnames);
+                $this->unevaluatedCallbackMethods = array_merge($this->unevaluatedCallbackMethods, $unevaluatedMethodnames);
+            }
+        }
 
         // assign the condition to the classname
         $this->conditions[$className] = $condition;
@@ -216,6 +238,14 @@ class ConditionsManager
     public function getImmutableCalledConditions()
     {
         return $this->immutableCalledConditions;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUnevaluatedCallbackMethods()
+    {
+        return $this->unevaluatedCallbackMethods;
     }
 
     /**

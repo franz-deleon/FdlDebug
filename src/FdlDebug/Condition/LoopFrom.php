@@ -137,6 +137,9 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         }
     }
 
+    /**
+     * todo: figure why this method is being inject in postDebug
+     */
     public function loopFromNestedEnd()
     {
         $oldIndex = array_pop($this->nestedContentCounter);
@@ -144,6 +147,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
         StdLib\Utility::arrayReplaceKey($oldIndex, $newIndex, $this->contentStorage);
 
+        // we have to force reset because this method is not really chainable and must be called at the end;;
         Front::resetDebugInstance();
     }
 
@@ -163,7 +167,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function postDebug($return = null, $passed = false)
     {
-        $index    = $this->getUniquePosition();
+        $index = $this->getUniquePosition();
         $instance = $this->getDebugInstance();
 
         $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
@@ -185,6 +189,9 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     public function loopFromFlush()
     {
         $this->shutdown();
+
+        // we have to force reset because this method is not really chainable and must be called at the end;
+        Front::resetDebugInstance();
     }
 
     /**
@@ -225,7 +232,17 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function evaluationCallbackMethod()
     {
-        return array('loopFrom', 'loopFromNestedEnd', 'loopFromFlush');
+        return array('loopFrom');
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\AbstractCondition::unevaluatedCallbackMethods()
+     * @overload
+     */
+    public function unevaluatedCallbackMethods()
+    {
+        return array('loopFromNestedEnd', 'loopFromFlush');
     }
 
     /**

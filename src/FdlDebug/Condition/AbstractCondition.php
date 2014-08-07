@@ -12,6 +12,11 @@ abstract class AbstractCondition extends DebugAbstract
     protected $debugInstance;
 
     /**
+     * @var ConditionsManager
+     */
+    protected $conditionsManager;
+
+    /**
      * Debug instance
      * @param string $debugInstance
      * @return \FdlDebug\Condition\AbstractCondition
@@ -54,7 +59,27 @@ abstract class AbstractCondition extends DebugAbstract
             throw new \ErrorException("Cannot assemble unique index");
         }
 
-        return 'posindex-' . md5($file . ':' . $method . ':' . $line);
+        //return 'posindex-' . md5($file . ':' . $method . ':' . $line);
+        return 'posindex-' . $file . ':' . $method . ':' . $line;
+    }
+
+    /**
+     * @return \FdlDebug\Condition\ConditionsManager
+     */
+    public function getConditionsManager()
+    {
+        return $this->conditionsManager;
+    }
+
+    /**
+     * Set the conditions manager
+     * @param ConditionsManager $conditionsManager
+     * @return \FdlDebug\Condition\AbstractCondition
+     */
+    public function setConditionsManager($conditionsManager)
+    {
+        $this->conditionsManager = $conditionsManager;
+        return $this;
     }
 
     /**
@@ -78,6 +103,16 @@ abstract class AbstractCondition extends DebugAbstract
      * @overload
      */
     public function shutdown()
+    {
+    }
+
+    /**
+     * Returns a list of methods that will not be evaluated as a condition
+     * but will still be register by the conditions manager
+     * @return string|array
+     * @overload
+     */
+    public function unevaluatedCallbackMethods()
     {
     }
 }

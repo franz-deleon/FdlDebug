@@ -143,9 +143,11 @@ class Front
             // initialize the condition
             call_user_func_array(array($condition, $methodName), $args);
 
-            $this->conditionsManager->addConditionsOperand(self::$debugInstance, $condition->evaluate());
-            $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&'); //todo: implement conditions operator
-            $this->conditionsManager->addCalledConditions($condition);
+            if (!in_array($methodName, $this->conditionsManager->getUnevaluatedCallbackMethods())) {
+                $this->conditionsManager->addConditionsOperand(self::$debugInstance, $condition->evaluate());
+                $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&'); //todo: implement conditions operator
+                $this->conditionsManager->addCalledConditions($condition);
+            }
 
             // explicitly return '$this' to enable chaining
             return $this;

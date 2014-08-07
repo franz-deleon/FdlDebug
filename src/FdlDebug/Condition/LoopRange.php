@@ -61,7 +61,17 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      */
     public function evaluationCallbackMethod()
     {
-        return array('loopRange', 'rangeNestedEnd');
+        return array('loopRange');
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\AbstractCondition::unevaluatedCallbackMethods()
+     * @overload
+     */
+    public function unevaluatedCallbackMethods()
+    {
+        return array('rangeNestedEnd');
     }
 
     /**
