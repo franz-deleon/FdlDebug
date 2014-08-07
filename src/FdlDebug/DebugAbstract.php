@@ -1,15 +1,32 @@
 <?php
 namespace FdlDebug;
 
-use FdlDebug\Writer\WriterInterface;
+use FdlDebug\Writer\WriterInterface as Writer;
 
 abstract class DebugAbstract implements DebugInterface
 {
+    /**
+     * @var Writer
+     */
     protected $writer;
 
+    /**
+     * The file number instance
+     * @var string
+     */
     protected $file;
 
+    /**
+     * The line number instance
+     * @var string|int
+     */
     protected $line;
+
+    /**
+     * The callers method name
+     * @var string
+     */
+    protected $method;
 
     /**
      * Constructor.
@@ -25,8 +42,8 @@ abstract class DebugAbstract implements DebugInterface
     }
 
     /**
-     * Return the writer
-     * @return WriterInterface
+     * Retrieve the writer
+     * @return Writer
      */
     public function getWriter()
     {
@@ -37,15 +54,16 @@ abstract class DebugAbstract implements DebugInterface
      * (non-PHPdoc)
      * @see \FdlDebug\DebugInterface::setWriter()
      */
-    public function setWriter(WriterInterface $writer)
+    public function setWriter(Writer $writer)
     {
         $this->writer = $writer;
         return $this;
     }
 
     /**
-     * Set the file where debug method is run
+     * The file name from __call
      * @param string $file
+     * @return \FdlDebug\Condition\AbstractCondition
      */
     public function setFile($file)
     {
@@ -54,7 +72,7 @@ abstract class DebugAbstract implements DebugInterface
     }
 
     /**
-     * Retrieve the file where method is run
+     * Retrieve the file name
      * @return string
      */
     public function getFile()
@@ -63,8 +81,9 @@ abstract class DebugAbstract implements DebugInterface
     }
 
     /**
-     * Set the line number where method is run
-     * @param string $line
+     * Set the line number from __call
+     * @param int $line
+     * @return \FdlDebug\Condition\AbstractCondition
      */
     public function setLine($line)
     {
@@ -73,12 +92,30 @@ abstract class DebugAbstract implements DebugInterface
     }
 
     /**
-     * Return the line where method is run
-     * @return string
+     * Retrieve the line number from __call
+     * @return int
      */
     public function getLine()
     {
         return $this->line;
+    }
+
+    /**
+     * Set the method
+     * @param string $method
+     */
+    public function setMethod($method)
+    {
+        $this->method = $method;
+    }
+
+    /**
+     * Retrieve the method
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
     }
 
     /**

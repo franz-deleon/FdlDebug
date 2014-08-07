@@ -6,86 +6,10 @@ use FdlDebug\DebugAbstract;
 abstract class AbstractCondition extends DebugAbstract
 {
     /**
-     * The condition's file number instance
-     * @var string
-     */
-    protected $file;
-
-    /**
-     * The condition's line number instance
-     * @var string|int
-     */
-    protected $line;
-
-    /**
      * Debug instance id
      * @var string
      */
     protected $debugInstance;
-
-    /**
-     * Method name
-     * @var string
-     */
-    protected $method;
-
-    /**
-     * The file name from __call
-     * @param string $file
-     * @return \FdlDebug\Condition\AbstractCondition
-     */
-    public function setFile($file)
-    {
-        $this->file = $file;
-        return $this;
-    }
-
-    /**
-     * Retrieve the file name
-     * @return string
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * Set the line number from __call
-     * @param int $line
-     * @return \FdlDebug\Condition\AbstractCondition
-     */
-    public function setLine($line)
-    {
-        $this->line = $line;
-        return $this;
-    }
-
-    /**
-     * Retrieve the line number from __call
-     * @return int
-     */
-    public function getLine()
-    {
-        return $this->line;
-    }
-
-    /**
-     * Set the method
-     * @param string $method
-     */
-    public function setMethod($method)
-    {
-        $this->method = $method;
-    }
-
-    /**
-     * Retrieve the method
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
 
     /**
      * Debug instance
