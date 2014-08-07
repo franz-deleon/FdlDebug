@@ -6,7 +6,7 @@
         "fdldebug",
         "debugger",
         "var_dump",
-        "print_r",
+        "print_r"
     ],
     "homepage": "https://github.com/franz-deleon/FdlDebug",
     "license": "MIT",
