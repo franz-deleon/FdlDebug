@@ -6,6 +6,11 @@ use FdlDebug\StdLib\Utility;
 class Bootstrap
 {
     /**
+     * @var string
+     */
+    const FUNCTIONS_FILENAME = 'Functions.php';
+
+    /**
      * Configs
      * @var array
      */
@@ -19,10 +24,10 @@ class Bootstrap
 
     /**
      * Initialize the bootstrap
-     * @param string $customConfigFile The custom config file to be initialized.
-     *                                 Should be fully qualified file path or array.
+     * @param string $customConfigFileOr Array The custom config file to be initialized.
+     *                                   Should be fully qualified file path or array.
      */
-    public static function init($customConfigFile = null)
+    public static function init($customConfigFileOrArray = null)
     {
         self::$configs = include_once __DIR__ . '/../../config/global.php';
 
@@ -31,11 +36,11 @@ class Bootstrap
             $localConfig = include_once __DIR__ . '/../../config/local.php';
             self::$configs = Utility::merge(self::$configs, $localConfig);
         }
-        if (null !== $customConfigFile) {
-            if (is_string($customConfigFile) && file_exists($customConfigFile)) {
-                $customConfig = include_once $customConfigFile;
-            } elseif (is_array($customConfigFile)) {
-                $customConfig = $customConfigFile;
+        if (null !== $customConfigFileOrArray) {
+            if (is_string($customConfigFileOrArray) && file_exists($customConfigFileOrArray)) {
+                $customConfig = include_once $customConfigFileOrArray;
+            } elseif (is_array($customConfigFileOrArray)) {
+                $customConfig = $customConfigFileOrArray;
             }
 
             if (isset($customConfig) && is_array($customConfig)) {
@@ -43,13 +48,13 @@ class Bootstrap
             } else {
                 throw new \ErrorException(sprintf(
                     "File '%s' should return an array",
-                    $customConfigFile
+                    $customConfigFileOrArray
                 ));
             }
         }
 
         // Include the procedural php functions
-        include_once __DIR__ . '/../../Functions.php';
+        include_once __DIR__ . '/../../' . self::FUNCTIONS_FILENAME;
 
         // Initialize xdebug
         self::initXdebugTrace();

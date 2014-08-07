@@ -1,10 +1,10 @@
 <?php
 namespace FdlDebug;
 
+use FdlDebug\Bootstrap;
 use FdlDebug\Condition\ConditionsManager;
 use FdlDebug\Condition\AbstractCondition;
 use FdlDebug\StdLib\Utility;
-use Zend\Soap\call_user_func;
 
 /**
  * This is the entry point for the debug using a front
@@ -82,10 +82,10 @@ class Front
      */
     public function __destruct()
     {
-        $x = $this->conditionsManager->getImmutableCalledConditions();
-        foreach ($x as $condition) {
+        $conditions = $this->conditionsManager->getImmutableCalledConditions();
+        foreach ($conditions as $condition) {
             if (method_exists($condition, 'shutdown')) {
-                $condition->shutdown($this->writer);
+                register_shutdown_function(array($condition, 'shutdown'), $this->writer);
             }
         }
     }
@@ -134,9 +134,9 @@ class Front
                         $trace = $this->debug->findTraceKeyAndSlice($backTrace, 'function', self::BACKTRACE_FUNC_TO_SEARCH, 0, 1);
                     }
 
-                    $condition->setFile($trace[0]['file'])
-                        ->setLine($trace[0]['line'])
-                        ->setMethod($methodName);
+                    $condition->setFile($trace[0]['file']);
+                    $condition->setLine($trace[0]['line']);
+                    $condition->setMethod($methodName);
                 }
             }
 
@@ -169,13 +169,13 @@ class Front
         // a debug object has been found
         if (isset($debug)) {
             // pass the signature to debug
-            $debugBackTrace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', '__call', 1, 0, true);
-            if (!empty($debugBackTrace[0]['file']) && !empty($debugBackTrace[0]['line'])) {
-                if (isset($debugBackTrace[0]['file']) && strpos($debugBackTrace[0]['file'], 'Functions.php') !== false) {
-                    array_shift($debugBackTrace);
+            $debugTrace = $this->debug->findTraceKeyAndSlice($this->debug->getBackTrace(), 'function', self::BACKTRACE_FUNC_TO_SEARCH, 1, 0, true);
+            if (!empty($debugTrace[0]['file']) && !empty($debugTrace[0]['line'])) {
+                if (isset($debugTrace[0]['file']) && strpos($debugTrace[0]['file'], Bootstrap::FUNCTIONS_FILENAME) !== false) {
+                    array_shift($debugTrace);
                 }
-                $debug->setFile($debugBackTrace[0]['file']);
-                $debug->setLine($debugBackTrace[0]['line']);
+                $debug->setFile($debugTrace[0]['file']);
+                $debug->setLine($debugTrace[0]['line']);
             }
 
             $calledConditions = $this->conditionsManager->getCalledConditions();

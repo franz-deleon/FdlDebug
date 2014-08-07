@@ -1,6 +1,11 @@
 <?php
 # Provide a way to pass a config file to the bootstrap
-# by declaring a global variable named $fdldebug_config_file
+# by initializing a global variable named $fdldebug_config_file
+# Example:
+#
+# $fdldebug_config_file = array([...]); // see global.php for config sample
+# include Bootstrapper.php // the bootstrapper will inject the config automatically
+
 if (!isset($GLOBALS['fdldebug_config_file']) && !isset($fdldebug_config_file)) {
     $fdldebug_config_file = null; // needs to be explicitly set to null to avoid var undeclared warnings
 } else {

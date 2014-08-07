@@ -145,11 +145,10 @@ abstract class DebugAbstract implements DebugInterface
     public function getFileTrace($showVendor = false)
     {
         $files = array();
-        $fdlDebugDirname = basename(realpath(__DIR__ . '/../../'));
         foreach (get_included_files() as $key => $file) {
             if (stripos($file, 'phar:') !== false
                 || (stripos($file, '/vendor/') !== false && $showVendor == false)
-                || (stripos($file, "/{$fdlDebugDirname}/") !== false)
+                || (stripos($file, '/' . basename(realpath(__DIR__ . '/../../')) . '/') !== false)
             ) {
                 if (! (stripos($file, '/tests/FdlDebugTests/') !== false)) {
                     continue;
