@@ -74,11 +74,10 @@ abstract class AbstractCondition extends DebugAbstract
 
     /**
      * A hook to run any code logic on conditional shutdown
-     * @param $params Any optional parameter to pass
      * @return void
      * @overload
      */
-    public function shutdown($param = null)
+    public function shutdown()
     {
     }
 }

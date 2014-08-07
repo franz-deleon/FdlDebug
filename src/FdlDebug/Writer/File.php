@@ -84,12 +84,12 @@ class File extends AbstractWriter implements WriterInterface
             case 'printBackTrace':
             case 'printFiles':
             default:
-                $string  = PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
-                $string .= print_r($content, true);
-                $string .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})**********" . PHP_EOL;
+                $retval  = PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
+                $retval .= print_r($content, true);
+                $retval .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})**********" . PHP_EOL;
 
                 if ($this->fileHandle !== false) {
-                    fwrite($this->fileHandle, $string);
+                    fwrite($this->fileHandle, $retval);
                 } else {
                     $posix = posix_getpwuid(posix_getuid());
                     throw new \ErrorException("Cannot create log file: '{$this->fileLogFileName}' for user: {$posix['name']}");

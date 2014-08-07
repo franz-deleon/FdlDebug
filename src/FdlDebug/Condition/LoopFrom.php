@@ -1,7 +1,6 @@
 <?php
 namespace FdlDebug\Condition;
 
-use FdlDebug\Writer\WriterInterface as Writer;
 use FdlDebug\Writer\GenericOutput;
 use FdlDebug\Front;
 use FdlDebug\StdLib;
@@ -78,7 +77,6 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
         if (false === self::$obStart) {
             self::$obStart = true;
-            //ob_flush(); // flush the output buffer first
             ob_start();
         }
     }
@@ -92,7 +90,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     public function sliceContentStack()
     {
         $content = array_shift($this->contentStorage);
-        if (!empty($content) && !empty($content['expression'])) {
+        if (!empty($content['expression'])) {
             preg_match(sprintf(
                 $this->regexExpression,
                 implode('|', array_merge(
@@ -146,9 +144,6 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
 
         StdLib\Utility::arrayReplaceKey($oldIndex, $newIndex, $this->contentStorage);
 
-//         var_dump($this->contentStorage);
-//         echo "\n\n\n";
-
         Front::resetDebugInstance();
     }
 
@@ -156,10 +151,10 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      * (non-PHPdoc)
      * @see \FdlDebug\Condition\ConditionsInterface::preDebug()
      */
-    public function preDebug(Writer $writer)
+    public function preDebug()
     {
         // force the writer to not write
-        $writer->setRunWrite(false);
+        $this->getWriter()->setRunWrite(false);
     }
 
     /**
@@ -174,7 +169,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
         $this->contentStorage[$index]['content'][$instance]['passed'] = $passed;
 
-        Front::i()->getWriter()->setRunWrite(true);
+        $this->getWriter()->setRunWrite(true);
 
         // turn off output buffering
         if (true === self::$obStart) {
@@ -189,16 +184,17 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function loopFromFlush()
     {
-        $this->shutdown(Front::i()->getWriter());
+        $this->shutdown();
     }
 
     /**
      * @overload
      * @see \FdlDebug\Condition\AbstractCondition::shutdown()
      */
-    public function shutdown($writer = null)
+    public function shutdown()
     {
         do {
+            $writer = $this->getWriter();
             $slicedStack = $this->sliceContentStack();
             if (!empty($slicedStack)) {
                 foreach ($slicedStack as $key => $val) {

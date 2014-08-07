@@ -51,7 +51,7 @@ interface ConditionsInterface
      * @param $writer The writer object
      * @return boolean
      */
-    public function preDebug(Writer $writer);
+    public function preDebug();
 
     /**
      * A hook that is run 'after' a debug method call is invoked

@@ -85,7 +85,7 @@ class Front
         $conditions = $this->conditionsManager->getImmutableCalledConditions();
         foreach ($conditions as $condition) {
             if (method_exists($condition, 'shutdown')) {
-                register_shutdown_function(array($condition, 'shutdown'), $this->writer);
+                $condition->shutdown();
             }
         }
     }
@@ -184,7 +184,7 @@ class Front
             // pre processing on called conditions
             foreach ($calledConditions as $condition) {
                 // the writer is pass to give the condition a chance to modify it
-                $condition->preDebug($this->writer);
+                $condition->preDebug();
             }
 
             $return = null;
