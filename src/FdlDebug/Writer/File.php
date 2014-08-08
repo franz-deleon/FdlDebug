@@ -97,7 +97,7 @@ class File extends AbstractWriter implements WriterInterface
             case 'printFiles':
             default:
                 $retval  = "";
-                $retval  .= ($this->shouldAddMoreSpacer()) ? str_repeat(PHP_EOL, $this->spacerCount) : "";
+                $retval  .= ($this->addSpacer()) ? str_repeat(PHP_EOL, $this->spacerCount) : "";
                 $retval .= PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
                 $retval .= print_r($content, true);
                 $retval .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})**********" . PHP_EOL;
@@ -116,25 +116,27 @@ class File extends AbstractWriter implements WriterInterface
      * This is usefull for using the linux tail look at the end of file
      * @return bool
      */
-    protected function shouldAddMoreSpacer()
+    protected function addSpacer()
     {
-        $pos  = -2;
-        $text = '';
-        while ($text != "\n") {
-            fseek($this->fileHandle, $pos, SEEK_END);
-            $text = fgetc($this->fileHandle);
-            $pos  = $pos - 1;
-        }
+        if ($this->fileHandle && filesize($this->fileLogFileName) > 0) {
+            $pos  = -2;
+            $text = '';
+            while ($text != "\n") {
+                fseek($this->fileHandle, $pos, SEEK_END);
+                $text = fgetc($this->fileHandle);
+                $pos  = $pos - 1;
+            }
 
-        preg_match('~(?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2}) (?P<time>[0-9]{2}:[0-9]{2}:[0-9]{2})~', fgets($this->fileHandle), $matches);
+            preg_match('~(?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2}) (?P<time>[0-9]{2}:[0-9]{2}:[0-9]{2})~', fgets($this->fileHandle), $matches);
 
-        if (!empty($matches['date']) && !empty($matches['time'])) {
-            $timeStart = strtotime("{$matches['date']} {$matches['time']}");
-            $timeEnd   = time();
-            $secondLaps = $timeEnd - $timeStart;
+            if (!empty($matches['date']) && !empty($matches['time'])) {
+                $timeStart = strtotime("{$matches['date']} {$matches['time']}");
+                $timeEnd   = time();
+                $secondLaps = $timeEnd - $timeStart;
 
-            if ($secondLaps > $this->spaceTimeBuffer) {
-                return true;
+                if ($secondLaps > $this->spaceTimeBuffer) {
+                    return true;
+                }
             }
         }
         return false;
