@@ -30,6 +30,18 @@ class File extends AbstractWriter implements WriterInterface
     protected $fileHandle;
 
     /**
+     * The time lapse until we should add more spacing
+     * @var int The value in seconds
+     */
+    protected $spaceTimeBuffer = 2;
+
+    /**
+     * How many spaces to add relative to spaceTimeBuffer
+     * @var int The number of spaces
+     */
+    protected $spacerCount = 5;
+
+    /**
      * Constructor.
      * Give a chance to override the writer_file_log_path within the config
      * @param void
@@ -72,7 +84,7 @@ class File extends AbstractWriter implements WriterInterface
             return $content;
         }
 
-        $time  = date('y-m-d h:i:s');
+        $time  = date('Y-m-d h:i:s');
         $host  = gethostname();
         $debug = Front::i()->getDebug();
         $file  = $debug->getFile();
@@ -84,7 +96,9 @@ class File extends AbstractWriter implements WriterInterface
             case 'printBackTrace':
             case 'printFiles':
             default:
-                $retval  = PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
+                $retval  = "";
+                $retval  .= ($this->shouldAddMoreSpacer()) ? str_repeat(PHP_EOL, $this->spacerCount) : "";
+                $retval .= PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
                 $retval .= print_r($content, true);
                 $retval .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})**********" . PHP_EOL;
 
@@ -95,5 +109,34 @@ class File extends AbstractWriter implements WriterInterface
                     throw new \ErrorException("Cannot create log file: '{$this->fileLogFileName}' for user: {$posix['name']}");
                 }
         }
+    }
+
+    /**
+     * Should we add more spacer?
+     * This is usefull for using the linux tail look at the end of file
+     * @return bool
+     */
+    protected function shouldAddMoreSpacer()
+    {
+        $pos  = -2;
+        $text = '';
+        while ($text != "\n") {
+            fseek($this->fileHandle, $pos, SEEK_END);
+            $text = fgetc($this->fileHandle);
+            $pos  = $pos - 1;
+        }
+
+        preg_match('~(?P<date>[0-9]{4}-[0-9]{2}-[0-9]{2}) (?P<time>[0-9]{2}:[0-9]{2}:[0-9]{2})~', fgets($this->fileHandle), $matches);
+
+        if (!empty($matches['date']) && !empty($matches['time'])) {
+            $timeStart = strtotime("{$matches['date']} {$matches['time']}");
+            $timeEnd   = time();
+            $secondLaps = $timeEnd - $timeStart;
+
+            if ($secondLaps > $this->spaceTimeBuffer) {
+                return true;
+            }
+        }
+        return false;
     }
 }
