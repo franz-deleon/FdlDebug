@@ -1,8 +1,6 @@
 <?php
 namespace FdlDebug\Condition;
 
-use FdlDebug\Writer\WriterInterface as Writer;
-
 interface ConditionsInterface
 {
     /**

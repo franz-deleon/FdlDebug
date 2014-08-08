@@ -59,8 +59,7 @@ abstract class AbstractCondition extends DebugAbstract
             throw new \ErrorException("Cannot assemble unique index");
         }
 
-        //return 'posindex-' . md5($file . ':' . $method . ':' . $line);
-        return 'posindex-' . $file . ':' . $method . ':' . $line;
+        return 'posindex-' . md5($file . ':' . $method . ':' . $line);
     }
 
     /**

@@ -77,6 +77,10 @@ class ConditionsManager
         $methodNames = $condition->evaluationCallbackMethod();
         $className   = get_class($condition);
 
+        if (!is_array($methodNames)) {
+            $methodNames = array($methodNames);
+        }
+
         if ($condition instanceof AbstractCondition) {
             // inject the conditions manager
             $condition->setConditionsManager($this);
@@ -95,10 +99,6 @@ class ConditionsManager
 
         // assign the condition to the classname
         $this->conditions[$className] = $condition;
-
-        if (!is_array($methodNames)) {
-            $methodNames = array($methodNames);
-        }
 
         foreach ($methodNames as $methodName) {
             if (isset($this->conditionsMethodName[$methodName])) {

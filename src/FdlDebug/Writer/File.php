@@ -84,7 +84,7 @@ class File extends AbstractWriter implements WriterInterface
             return $content;
         }
 
-        $time  = date('Y-m-d h:i:s');
+        $time  = date('Y-m-d H:i:s');
         $host  = gethostname();
         $debug = Front::i()->getDebug();
         $file  = $debug->getFile();
@@ -97,7 +97,7 @@ class File extends AbstractWriter implements WriterInterface
             case 'printFiles':
             default:
                 $retval  = "";
-                $retval  .= ($this->addSpacer()) ? str_repeat(PHP_EOL, $this->spacerCount) : "";
+                $retval .= ($this->addSpacer()) ? str_repeat(PHP_EOL, $this->spacerCount) : "";
                 $retval .= PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
                 $retval .= print_r($content, true);
                 $retval .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})**********" . PHP_EOL;
@@ -112,7 +112,7 @@ class File extends AbstractWriter implements WriterInterface
     }
 
     /**
-     * Should we add more spacer?
+     * Should we add spacing?
      * This is usefull for using the linux tail look at the end of file
      * @return bool
      */
