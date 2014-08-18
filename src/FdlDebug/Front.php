@@ -143,6 +143,7 @@ class Front
             // initialize the condition
             call_user_func_array(array($condition, $methodName), $args);
 
+            // do not evaluate a method if its a part of $unevaluatedCallbackMethods array
             if (!in_array($methodName, $this->conditionsManager->getUnevaluatedCallbackMethods())) {
                 $this->conditionsManager->addConditionsOperand(self::$debugInstance, $condition->evaluate());
                 $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&'); //todo: implement conditions operator
@@ -198,6 +199,7 @@ class Front
             foreach ($calledConditions as $condition) {
                 $condition->postDebug($return, $pass);
             }
+
             // reset the called conditions
             $this->conditionsManager->resetCalledConditions();
 

@@ -1,7 +1,7 @@
 <?php
 namespace FdlDebug\Condition;
 
-class Boolean extends AbstractCondition implements ConditionsInterface
+class Boolean implements ConditionsInterface
 {
     /**
      * Holds the loop condition status
@@ -27,11 +27,19 @@ class Boolean extends AbstractCondition implements ConditionsInterface
         return $this;
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::evaluationCallbackMethod()
+     */
     public function evaluationCallbackMethod()
     {
         return 'condBoolean';
     }
 
+    /**
+     * (non-PHPdoc)
+     * @see \FdlDebug\Condition\ConditionsInterface::evaluate()
+     */
     public function evaluate()
     {
         if (is_bool($this->condition)) {
@@ -43,9 +51,8 @@ class Boolean extends AbstractCondition implements ConditionsInterface
      * Do nothing
      * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
      */
-    public function postDebug()
+    public function postDebug($return = null, $passed)
     {
-        return;
     }
 
     /**

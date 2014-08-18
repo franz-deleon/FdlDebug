@@ -46,7 +46,6 @@ interface ConditionsInterface
 
     /**
      * A hook that is run 'before' a debug method call is invoked
-     * @param $writer The writer object
      * @return boolean
      */
     public function preDebug();
@@ -57,5 +56,5 @@ interface ConditionsInterface
      * @param $passed If the evaluation passed or not
      * @return null
      */
-    public function postDebug();
+    public function postDebug($return = null, $passed);
 }

@@ -165,13 +165,13 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      * (non-PHPdoc)
      * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
      */
-    public function postDebug($return = null, $passed = false)
+    public function postDebug($return = null, $passed)
     {
-        $index = $this->getUniquePosition();
+        $posIndex = $this->getUniquePosition();
         $instance = $this->getDebugInstance();
 
-        $this->contentStorage[$index]['content'][$instance]['string'] = $return ?: ob_get_contents();
-        $this->contentStorage[$index]['content'][$instance]['passed'] = $passed;
+        $this->contentStorage[$posIndex]['content'][$instance]['string'] = $return ?: ob_get_contents();
+        $this->contentStorage[$posIndex]['content'][$instance]['passed'] = $passed;
 
         $this->getWriter()->setRunWrite(true);
 
