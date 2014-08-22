@@ -162,12 +162,12 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      * (non-PHPdoc)
      * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
      */
-    public function postDebug($return = null, $passed)
+    public function postDebug($callbackReturnVal, $passed)
     {
         $posIndex = $this->getUniquePosition();
         $instance = $this->getDebugInstance();
 
-        $this->contentStorage[$posIndex]['content'][$instance]['string'] = $return ?: ob_get_contents();
+        $this->contentStorage[$posIndex]['content'][$instance]['string'] = $callbackReturnVal ?: ob_get_contents();
         $this->contentStorage[$posIndex]['content'][$instance]['passed'] = $passed;
 
         $this->getWriter()->setRunWrite(true);

@@ -52,9 +52,10 @@ interface ConditionsInterface
 
     /**
      * A hook that is run 'after' a debug method call is invoked
-     * @param $return The return value is passed automatically
-     * @param $passed If the evaluation passed or not
+     *
+     * @param $callbackReturnVal   The return value of the evaluated callback method
+     * @param $passed              If the evaluation passed or not
      * @return null
      */
-    public function postDebug($return = null, $passed);
+    public function postDebug($callbackReturnVal, $passed);
 }

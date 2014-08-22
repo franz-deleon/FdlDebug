@@ -118,7 +118,7 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      * Do nothing
      * @see \FdlDebug\Condition\ConditionsInterface::postDebug()
      */
-    public function postDebug($return = null, $passed)
+    public function postDebug($callbackReturnVal, $passed)
     {
     }
 }
