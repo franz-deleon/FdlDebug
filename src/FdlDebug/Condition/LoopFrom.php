@@ -146,9 +146,6 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
         $newIndex = $oldIndex . '-' . uniqid();
 
         StdLib\Utility::arrayReplaceKey($oldIndex, $newIndex, $this->contentStorage);
-
-        // we have to force reset because this method is not really chainable and must be called at the end;;
-        Front::resetDebugInstance();
     }
 
     /**
@@ -189,9 +186,6 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
     public function loopFromFlush()
     {
         $this->shutdown();
-
-        // we have to force reset because this method is not really chainable and must be called at the end;
-        Front::resetDebugInstance();
     }
 
     /**
@@ -232,7 +226,7 @@ class LoopFrom extends AbstractCondition implements ConditionsInterface
      */
     public function evaluationCallbackMethod()
     {
-        return array('loopFrom');
+        return 'loopFrom';
     }
 
     /**

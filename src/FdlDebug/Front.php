@@ -143,8 +143,11 @@ class Front
             // initialize the condition
             call_user_func_array(array($condition, $methodName), $args);
 
-            // do not evaluate a method if its a part of $unevaluatedCallbackMethods array
-            if (!in_array($methodName, $this->conditionsManager->getUnevaluatedCallbackMethods())) {
+            // If its a part of $unevaluatedCallbackMethods array, reset the debug instance.
+            if (in_array($methodName, $this->conditionsManager->getUnevaluatedCallbackMethods())) {
+                static::resetDebugInstance();
+                return;
+            } else {
                 $this->conditionsManager->addConditionsOperand(self::$debugInstance, $condition->evaluate());
                 $this->conditionsManager->addConditionsOperator(self::$debugInstance, '&&'); //todo: implement conditions operator
                 $this->conditionsManager->addCalledConditions($condition);

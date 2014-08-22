@@ -385,20 +385,20 @@ class LoopFromTest extends AbstractIntegrationsTestCase
     public function testLoopFromNestedWithMultiNonChainingConditions()
     {
         $this->assertOutputString(
-            'string(6) "bool:1"',
-            'string(6) "bool:3"',
+            'string(10) "bool-1st:1"',
+            'string(10) "bool-3rd:3"',
             'int(2)',
             'int(2)',
             'int(2)'
         );
 
         for ($x = 1; $x <= 3; $x++) {
-            $this->Front->condBoolean($x == 1)->pr('bool:' .  $x);
+            $this->Front->condBoolean($x == 1)->pr('bool-1st:' .  $x);
             for ($i = 1; $i <= 3; $i++) {
                 $this->Front->loopFrom('middle', 1)->pr($i);
             }
             $this->Front->loopFromNestedEnd();
-            $this->Front->condBoolean($x == 3)->pr('bool:' . $x);
+            $this->Front->condBoolean($x == 3)->pr('bool-3rd:' . $x);
         }
         $this->Front->loopFromFlush();
     }

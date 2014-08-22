@@ -50,9 +50,6 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
         if ($this->loopRangeStamp[$lastIndex]['iterator']) {
             $this->loopRangeStamp[$lastIndex]['iterator'] = 0;
         }
-        // we need to force destroy the debug front instance
-        // since this method is not of Debug object
-        Front::resetDebugInstance();
     }
 
     /**
@@ -61,7 +58,7 @@ class LoopRange extends AbstractCondition implements ConditionsInterface
      */
     public function evaluationCallbackMethod()
     {
-        return array('loopRange');
+        return 'loopRange';
     }
 
     /**
