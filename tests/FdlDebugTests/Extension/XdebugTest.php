@@ -64,8 +64,7 @@ class XdebugTest extends \PHPUnit_Framework_TestCase
         $_GET['XDEBUG_TRACE'] = 1;
 
         // overwrite the trace dir
-        $config =& Bootstrap::getConfigs();
-        $config['xdebug']['trace_output_dir'] = __DIR__ . '/../Assets';
+        Bootstrap::setConfigs('xdebug', array('trace_output_dir' => __DIR__ . '/../Assets'));
 
         $r = $this->Xdebug->printXdebugTracedVar('cherylx');
         $this->assertRegExp("~var\([$]cherylx\) assignment~", $r);
@@ -100,8 +99,7 @@ class XdebugTest extends \PHPUnit_Framework_TestCase
     public function testPrintXdebugTracedVarReturnsExceptionOnDisabledXdebug()
     {
         // force disable xdebug
-        $config =& Bootstrap::getConfigs();
-        $config['xdebug_tracing_enabled'] = false;
+        Bootstrap::setConfigs('xdebug_tracing_enabled', false);
 
         $this->Xdebug->printXdebugTracedVar('hello');
     }

@@ -178,5 +178,4 @@ function fd_writer()
 
 // We need to register the functions
 $fdl_functions = get_defined_functions();
-$fdl_configs   =& Bootstrap::getConfigs();
-$fdl_configs['function_names'] = $fdl_functions['user'];
+Bootstrap::setConfigs('function_names', $fdl_functions['user']);

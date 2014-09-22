@@ -70,9 +70,8 @@ class FunctionTest extends Integrations\AbstractIntegrationsTestCase
         $_GET['XDEBUG_TRACE'] = 1;
 
         // overwrite the trace dir
-        $config =& Bootstrap::getConfigs();
-        $config['xdebug']['trace_output_dir'] = __DIR__ . '/Assets';
-        $config['xdebug_tracing_enabled'] = true;
+        Bootstrap::setConfigs('xdebug', array('trace_output_dir' => __DIR__ . '/Assets'));
+        Bootstrap::setConfigs('xdebug_tracing_enabled', true);
 
         prx_trace_var('cherylx');
         $this->expectOutputRegex("~var\([$]cherylx\) assignment~");

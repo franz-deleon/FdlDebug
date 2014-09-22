@@ -86,9 +86,21 @@ class Bootstrap
      * Return the configs
      * @return &array
      */
-    public static function &getConfigs()
+    public static function getConfigs()
     {
         return self::$configs;
+    }
+
+    /**
+     * Set a config
+     * @param string $key
+     * @param mixed  $value
+     */
+    public static function setConfigs($key, $value)
+    {
+        $toArray = array();
+        $toArray[$key] = $value;
+        self::$configs = Utility::merge(self::$configs, $toArray);
     }
 
     /**

@@ -22,7 +22,7 @@ abstract class Utility
             if (isset($key, $a)) {
                 if (is_int($key)) {
                     $a[] = $value;
-                } elseif (is_array($value) && is_array($a[$key])) {
+                } elseif (is_array($value) && (isset($a[$key]) && is_array($a[$key]))) {
                     $a[$key] = static::merge($a[$key], $value);
                 } else {
                     $a[$key] = $value;
