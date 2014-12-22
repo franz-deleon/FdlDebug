@@ -93,7 +93,7 @@ class Debug extends DebugAbstract
     public function printBackTrace()
     {
         $trace = $this->getBackTrace();
-        $trace = $this->findTraceKeyAndSlice($trace, 'function', __FUNCTION__, 3); // 3 to offset the Front class __call
+        $trace = $this->findTraceKeyAndSlice($trace, 'function', array(__FUNCTION__, 'pr_backtrace'), 0, 0, true);
         $trace[0]['notice'] = "END OF BACKTRACE";
 
         return $this->getWriter()->write(array_reverse($trace), array('function' => __FUNCTION__));

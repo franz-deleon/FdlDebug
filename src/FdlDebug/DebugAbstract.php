@@ -183,6 +183,9 @@ abstract class DebugAbstract implements DebugInterface
         $fromStartOffset = 0,
         $startFromEnd = false
     ) {
+        if (is_string($traceValueToSearch)) {
+            $traceValueToSearch = array($traceValueToSearch);
+        }
         if ($startFromEnd == true) {
             $traceArray = array_reverse($traceArray);
         }
@@ -191,7 +194,7 @@ abstract class DebugAbstract implements DebugInterface
         }
 
         foreach ($traceArray as $key => $val) {
-            if ($val[$traceKey] === $traceValueToSearch) {
+            if (in_array($val[$traceKey], $traceValueToSearch)) {
                 if ($startFromEnd == true) {
                     $traceArray = array_slice($traceArray, 0, ($key + 1) + -abs($fromSearchedValueOffset));
                     break;
