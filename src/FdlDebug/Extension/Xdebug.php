@@ -63,6 +63,12 @@ class Xdebug extends DebugAbstract
         $exec = "grep -i \"\\\${$varName}\\b\" " . $traceFile;
         exec($exec, $output);
 
+        if (preg_match("~[\[\]]+~", $varName) === 1) {
+            $varName = preg_quote($varName);
+            echo $exec = "grep -i \"\\\${$varName}\" " . $traceFile;
+            exec($exec, $output);
+        }
+
         $this->xdebugCleanTrace($output);
         $this->xdebugFormatTrace($output, $varName);
 
