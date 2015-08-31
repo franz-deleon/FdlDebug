@@ -52,6 +52,10 @@ class Debug extends DebugAbstract
             $return['hash_id']    = spl_object_hash($object);
             $return['methods']    = get_class_methods($className);
             $return['properties'] = get_class_vars($className);
+
+            sort($return['methods']);
+            asort($return['properties']);
+
             return $this->getWriter()->write($return, array('function' => __FUNCTION__));
         } else {
             return $this->pr('Is not an object');
