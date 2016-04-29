@@ -96,11 +96,12 @@ class File extends AbstractWriter implements WriterInterface
             case 'printBackTrace':
             case 'printFiles':
             default:
+                $hash_separator = md5();
                 $retval  = "";
                 $retval .= ($this->addSpacer()) ? str_repeat(PHP_EOL, $this->spacerCount) : "";
-                $retval .= PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})********" . PHP_EOL;
+                $retval .= PHP_EOL . "******START ({$host}:{$file}:{$line} at {$time})******** - {$hash_separator}" . PHP_EOL;
                 $retval .= print_r($content, true);
-                $retval .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})**********" . PHP_EOL;
+                $retval .= PHP_EOL . "******END ({$host}:{$file}:{$line} at {$time})********** - {$hash_separator}" . PHP_EOL;
 
                 if ($this->fileHandle !== false) {
                     fwrite($this->fileHandle, $retval);
