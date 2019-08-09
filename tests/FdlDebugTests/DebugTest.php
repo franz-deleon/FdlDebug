@@ -116,14 +116,5 @@ class DebugTest extends \PHPUnit_Framework_TestCase
         $this->assertRegExp("~\'order\' => [0-9]+~", $r);
     }
 
-    /**
-     * @group test8
-     */
-    public function testPrintObject()
-    {
-        $obj = new \stdClass();
-        $r = $this->Debug->printObject($obj);
-        $this->assertRegExp("~\'name\' => \'stdClass\'~", $r);
-    }
 }
 

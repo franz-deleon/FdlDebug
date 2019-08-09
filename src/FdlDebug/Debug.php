@@ -13,22 +13,6 @@ class Debug extends DebugAbstract
     }
 
     /**
-     * Print the content now
-     * @param mixed $content
-     */
-    public function printNow($content)
-    {
-        if (is_object($content)) {
-            return $this->printObject($content);
-        } else {
-            if (is_bool($content)) {
-                $content = 'boolean: ' . (($content === true) ? 'true' : 'false');
-            }
-            return $this->getWriter()->write($content, array('function' => __FUNCTION__));
-        }
-    }
-
-    /**
      * Print and die
      * @param mixed $content
      */
@@ -42,24 +26,14 @@ class Debug extends DebugAbstract
     }
 
     /**
-     * Defines an object
+     * prints the content to its appropriate resource
+     * @param mixed     $content Mixed resource content
+     * @return mixed
      */
-    public function printObject($object)
+    public function printNow($content)
     {
-        if (is_object($object)) {
-            $return = array();
-            $return['name'] = $className = get_class($object);
-            $return['hash_id']    = spl_object_hash($object);
-            $return['methods']    = get_class_methods($className);
-            $return['properties'] = get_class_vars($className);
-
-            sort($return['methods']);
-            asort($return['properties']);
-
-            return $this->getWriter()->write($return, array('function' => __FUNCTION__));
-        } else {
-            return $this->pr('Is not an object');
-        }
+        $content = $this->resourceTypeFactory($content);
+        return $this->getWriter()->write($content, array('function' => __FUNCTION__));
     }
 
     /**
@@ -120,5 +94,86 @@ class Debug extends DebugAbstract
         $fileTrace[] = array('order' => ++$lastOrder, 'file' => 'END');
 
         return $this->getWriter()->write($fileTrace, array('function' => __FUNCTION__));
+    }
+
+    /**
+     * Print the content now
+     * @param mixed $content
+     */
+    protected function resourceTypeFactory($content)
+    {
+        if (is_object($content)) {
+            $content = $this->parseObject($content);
+        } elseif (is_array($content)) {
+            $content = $this->parseArray($content);
+        } elseif (is_bool($content)) {
+            $content = $this->parseBool($content);
+        } elseif ($content === null) {
+            $content = $this->parseNull($content);
+        }
+
+        return $content;
+    }
+
+    /**
+     * Parse an array resource
+     * @param array $content
+     * @return array
+     */
+    protected function parseArray(array $content)
+    {
+        foreach ($content as &$v) {
+            $v = $this->resourceTypeFactory($v);
+        }
+        unset($v);
+
+        return $content;
+    }
+
+    /**
+     * Parse a boolean resource
+     * @param bool $content
+     * @return string
+     */
+    protected function parseBool($content)
+    {
+        if (is_bool($content)) {
+            return 'boolean: ' . (($content === true) ? 'true' : 'false');
+        }
+        return '';
+    }
+
+    /**
+     * Parse a null value
+     * @param null $content
+     * @return string
+     */
+    protected function parseNull($content)
+    {
+        if ($content === null) {
+            return 'NULL';
+        }
+        return '';
+    }
+
+    /**
+     * Defines an object
+     */
+    protected function parseObject($object, $showRaw = false)
+    {
+        if (is_object($object)) {
+            $return = array();
+            $return['name'] = $className = get_class($object);
+            $return['hash_id']    = spl_object_hash($object);
+            $return['methods']    = get_class_methods($className);
+            $return['properties'] = get_class_vars($className);
+            if ($showRaw) $return['raw'] = $object;
+
+            sort($return['methods']);
+            asort($return['properties']);
+
+            return $return;
+        }
+        return '';
     }
 }
